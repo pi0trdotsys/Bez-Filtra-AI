@@ -48,7 +48,7 @@ export function Sidebar({ isOpen, onClose, conversations, activeId, onSelect, on
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
             onClick={onClose}
             className="fixed inset-0 z-20 md:hidden"
-            style={{background:'rgba(0,0,0,0.5)',backdropFilter:'blur(4px)'}}
+            style={{background:'rgba(28,24,20,0.4)'}}
           />
         )}
       </AnimatePresence>
@@ -60,28 +60,26 @@ export function Sidebar({ isOpen, onClose, conversations, activeId, onSelect, on
         className="fixed top-0 left-0 h-full z-30 flex flex-col md:relative md:translate-x-0"
         style={{
           width: 220,
-          background: 'rgba(255,255,255,0.04)',
-          backdropFilter: 'blur(20px)',
-          borderRight: '0.5px solid rgba(255,255,255,0.08)',
+          background: 'var(--surface)',
+          borderRight: '1px solid var(--border)',
         }}
       >
-        <div style={{padding:'16px 14px 12px',borderBottom:'0.5px solid rgba(255,255,255,0.06)'}}>
+        <div style={{padding:'16px 14px 12px',borderBottom:'1px solid var(--border)'}}>
           <div className="flex items-center gap-2 mb-3">
             <div
               className="flex items-center justify-center"
-              style={{width:22,height:22,borderRadius:7,background:'linear-gradient(135deg,#a78bfa,#60a5fa)'}}
+              style={{width:22,height:22,borderRadius:7,border:'1.5px solid var(--accent)'}}
             >
-              <div style={{width:7,height:7,borderRadius:2.5,background:'#0f0c29'}} />
+              <div style={{width:6,height:6,borderRadius:'50%',background:'var(--accent)'}} />
             </div>
-            <span className="text-sm tracking-tight">
-              <span style={{color:'rgba(255,255,255,0.92)',fontWeight:600}}>Bez</span>
-              <span style={{color:'rgba(167,139,250,0.95)',fontWeight:600}}> Filtra</span>
+            <span className="serif text-base tracking-tight" style={{color:'var(--ink)',fontWeight:700}}>
+              Bez Filtra
             </span>
           </div>
           <button
             onClick={onNew}
             className="w-full flex items-center gap-2 text-xs rounded-lg px-3 py-2 transition-colors"
-            style={{background:'rgba(255,255,255,0.07)',border:'0.5px solid rgba(255,255,255,0.12)',color:'rgba(255,255,255,0.7)'}}
+            style={{background:'var(--surface-2)',border:'1px solid var(--border)',color:'var(--ink-soft)'}}
           >
             + Nowa rozmowa
           </button>
@@ -89,11 +87,11 @@ export function Sidebar({ isOpen, onClose, conversations, activeId, onSelect, on
 
         <div className="flex-1 overflow-y-auto p-2 flex flex-col gap-2">
           {conversations.length === 0 && (
-            <p className="text-xs text-center mt-4" style={{color:'rgba(255,255,255,0.25)'}}>Brak rozmów</p>
+            <p className="text-xs text-center mt-4" style={{color:'var(--ink-faint)'}}>Brak rozmów</p>
           )}
           {groups.map(group => (
             <div key={group.label} className="flex flex-col gap-0.5">
-              <p className="px-2 pt-1 pb-0.5" style={{fontSize:10,letterSpacing:'0.04em',color:'rgba(255,255,255,0.3)',textTransform:'uppercase'}}>
+              <p className="px-2 pt-1 pb-0.5" style={{fontSize:10,letterSpacing:'0.06em',color:'var(--ink-faint)',textTransform:'uppercase'}}>
                 {group.label}
               </p>
               {group.items.map(c => {
@@ -104,8 +102,8 @@ export function Sidebar({ isOpen, onClose, conversations, activeId, onSelect, on
                     onClick={() => { if (editingId !== c.id) onSelect(c.id) }}
                     className="group w-full flex items-center gap-1 px-3 py-2.5 rounded-lg transition-colors cursor-pointer"
                     style={{
-                      background: active ? 'rgba(var(--accent-rgb),0.15)' : 'transparent',
-                      border: active ? '0.5px solid rgba(var(--accent-rgb),0.25)' : '0.5px solid transparent',
+                      background: active ? 'var(--accent-soft)' : 'transparent',
+                      border: active ? '1px solid var(--accent)' : '1px solid transparent',
                     }}
                   >
                     <div className="flex-1 min-w-0">
@@ -121,10 +119,10 @@ export function Sidebar({ isOpen, onClose, conversations, activeId, onSelect, on
                             if (e.key === 'Escape') setEditingId(null)
                           }}
                           className="w-full bg-transparent border-none outline-none text-xs"
-                          style={{color:'rgba(255,255,255,0.95)',borderBottom:'0.5px solid rgba(var(--accent-rgb),0.5)'}}
+                          style={{color:'var(--ink)',borderBottom:'1px solid var(--accent)'}}
                         />
                       ) : (
-                        <p className="text-xs truncate" style={{color:'rgba(255,255,255,0.75)'}}>{c.title}</p>
+                        <p className="text-xs truncate" style={{color:'var(--ink-soft)'}}>{c.title}</p>
                       )}
                     </div>
                     {editingId !== c.id && (
@@ -134,7 +132,7 @@ export function Sidebar({ isOpen, onClose, conversations, activeId, onSelect, on
                           onClick={e => { e.stopPropagation(); setEditingId(c.id); setDraft(c.title) }}
                           aria-label="Zmień nazwę"
                           className="flex items-center justify-center rounded-md"
-                          style={{width:20,height:20,color:'rgba(255,255,255,0.4)'}}
+                          style={{width:20,height:20,color:'var(--ink-faint)'}}
                         >
                           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                             <path d="M12 20h9" /><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z" />
@@ -145,7 +143,7 @@ export function Sidebar({ isOpen, onClose, conversations, activeId, onSelect, on
                           onClick={e => { e.stopPropagation(); onDelete(c.id) }}
                           aria-label="Usuń rozmowę"
                           className="flex items-center justify-center rounded-md"
-                          style={{width:20,height:20,color:'rgba(255,255,255,0.4)'}}
+                          style={{width:20,height:20,color:'var(--ink-faint)'}}
                         >
                           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
                             <polyline points="3 6 5 6 21 6" />
@@ -163,38 +161,21 @@ export function Sidebar({ isOpen, onClose, conversations, activeId, onSelect, on
           ))}
         </div>
 
-        <div style={{padding:'10px 8px',borderTop:'0.5px solid rgba(255,255,255,0.06)'}}>
+        <div style={{padding:'10px 8px',borderTop:'1px solid var(--border)'}}>
           <button
             onClick={onOpenAdmin}
             className="w-full flex items-center gap-2 text-xs px-3 py-2 rounded-lg transition-colors mb-1.5"
-            style={{color:'rgba(255,255,255,0.4)',border:'0.5px solid rgba(255,255,255,0.08)'}}
+            style={{color:'var(--ink-soft)',border:'1px solid var(--border)'}}
           >
             📊 Statystyki
           </button>
           <button
             onClick={onLogout}
             className="w-full flex items-center gap-2 text-xs px-3 py-2 rounded-lg transition-colors"
-            style={{color:'rgba(255,255,255,0.4)',border:'0.5px solid rgba(255,255,255,0.08)'}}
+            style={{color:'var(--ink-soft)',border:'1px solid var(--border)'}}
           >
             ← Wyloguj
           </button>
-          <div className="flex flex-col items-center gap-0.5 mt-3 mb-1">
-            <div className="flex items-center gap-1" style={{fontSize:11}}>
-              <span style={{color:'rgba(255,255,255,0.35)'}}>crafted by</span>
-              <span
-                style={{
-                  fontWeight:700,letterSpacing:'-0.01em',
-                  background:'linear-gradient(135deg,#a78bfa,#60a5fa)',
-                  WebkitBackgroundClip:'text',backgroundClip:'text',WebkitTextFillColor:'transparent',
-                }}
-              >
-                NullPointer Studio
-              </span>
-            </div>
-            <span style={{fontSize:9,color:'rgba(255,255,255,0.22)',letterSpacing:'0.04em'}}>
-              null safe, fully unchained
-            </span>
-          </div>
         </div>
       </motion.aside>
     </>

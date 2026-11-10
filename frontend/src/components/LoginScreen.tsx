@@ -28,7 +28,7 @@ export function LoginScreen({ onLogin, notice }: LoginScreenProps) {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center" style={{background: 'linear-gradient(135deg, #0f0c29, #302b63, #24243e)'}}>
+    <div className="min-h-screen flex items-center justify-center" style={{background: 'var(--bg)'}}>
       <motion.div
         initial={{ opacity: 0, y: 24 }}
         animate={{ opacity: 1, y: 0 }}
@@ -37,28 +37,20 @@ export function LoginScreen({ onLogin, notice }: LoginScreenProps) {
       >
         <div className="text-center mb-9">
           <div
-            className="inline-flex items-center justify-center mb-5"
-            style={{
-              width: 46, height: 46, borderRadius: 14,
-              background: 'linear-gradient(135deg,#a78bfa,#60a5fa)',
-              boxShadow: '0 8px 28px rgba(120,80,255,0.35)',
-            }}
+            className="inline-flex items-center justify-center mb-6"
+            style={{ width: 44, height: 44, borderRadius: 12, border: '2px solid var(--accent)' }}
           >
-            <div style={{ width: 16, height: 16, borderRadius: 5, background: '#0f0c29' }} />
+            <div style={{ width: 12, height: 12, borderRadius: '50%', background: 'var(--accent)' }} />
           </div>
-          <h1 className="text-3xl tracking-tight mb-2" style={{ fontWeight: 600 }}>
-            <span style={{ color: 'rgba(255,255,255,0.95)' }}>Bez</span>{' '}
-            <span style={{
-              background: 'linear-gradient(135deg,#a78bfa,#60a5fa)',
-              WebkitBackgroundClip: 'text', backgroundClip: 'text', WebkitTextFillColor: 'transparent',
-            }}>Filtra</span>
+          <h1 className="serif text-4xl tracking-tight mb-2" style={{ fontWeight: 700, color: 'var(--ink)' }}>
+            Bez Filtra
           </h1>
-          <p style={{ color: 'rgba(255,255,255,0.5)' }} className="text-sm">
+          <p style={{ color: 'var(--ink-soft)' }} className="text-sm">
             Odpowiedź na każde pytanie
           </p>
           <p
             className="mt-5"
-            style={{ fontSize: 10, letterSpacing: '0.22em', color: 'rgba(255,255,255,0.28)', textTransform: 'uppercase' }}
+            style={{ fontSize: 10, letterSpacing: '0.22em', color: 'var(--ink-faint)', textTransform: 'uppercase' }}
           >
             bez cenzury · bez tematów tabu
           </p>
@@ -68,7 +60,7 @@ export function LoginScreen({ onLogin, notice }: LoginScreenProps) {
           <motion.p
             initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }}
             className="text-sm text-center mb-4 rounded-lg px-3 py-2"
-            style={{ color: 'rgba(251,191,36,0.9)', background: 'rgba(251,191,36,0.1)', border: '0.5px solid rgba(251,191,36,0.25)' }}
+            style={{ color: '#B7791F', background: '#FBF0D9', border: '1px solid #EFD9A7' }}
           >
             ⏳ {notice}
           </motion.p>
@@ -80,24 +72,24 @@ export function LoginScreen({ onLogin, notice }: LoginScreenProps) {
             value={password}
             onChange={e => setPassword(e.target.value)}
             placeholder="Hasło"
-            className="w-full rounded-xl px-4 py-3 text-sm outline-none"
+            className="w-full rounded-lg px-4 py-3 text-sm outline-none"
             style={{
-              background:'rgba(255,255,255,0.07)',
-              border:'0.5px solid rgba(255,255,255,0.15)',
-              color:'rgba(255,255,255,0.9)',
+              background:'var(--surface)',
+              border:'1px solid var(--border-strong)',
+              color:'var(--ink)',
             }}
             autoFocus
           />
           {error && (
-            <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-red-400 text-sm text-center">
+            <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-sm text-center" style={{ color: '#C0392B' }}>
               {error}
             </motion.p>
           )}
           <button
             type="submit"
             disabled={loading || !password}
-            className="w-full rounded-xl py-3 text-sm font-medium transition-opacity disabled:opacity-40"
-            style={{background:'linear-gradient(135deg,#a78bfa,#60a5fa)',color:'white'}}
+            className="w-full rounded-lg py-3 text-sm font-semibold transition-opacity disabled:opacity-40"
+            style={{background:'var(--accent)',color:'#fff'}}
           >
             {loading ? 'Logowanie...' : 'Wejdź'}
           </button>

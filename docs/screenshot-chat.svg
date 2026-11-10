@@ -1,109 +1,98 @@
 <svg viewBox="0 0 860 540" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif">
-  <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#0f0c29"/>
-      <stop offset="1" stop-color="#1a1730"/>
-    </linearGradient>
-    <linearGradient id="grad" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#a78bfa"/>
-      <stop offset="1" stop-color="#60a5fa"/>
-    </linearGradient>
-    <linearGradient id="userbubble" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#a78bfa" stop-opacity="0.22"/>
-      <stop offset="1" stop-color="#60a5fa" stop-opacity="0.12"/>
-    </linearGradient>
-  </defs>
-
-  <rect width="860" height="540" fill="url(#bg)"/>
+  <!-- Tło: papier -->
+  <rect width="860" height="540" fill="#F7F4EF"/>
 
   <!-- ── SIDEBAR ── -->
-  <rect width="220" height="540" fill="rgba(255,255,255,0.025)" stroke="rgba(255,255,255,0.06)" stroke-width="0.5"/>
+  <rect x="0" y="0" width="220" height="540" fill="#FFFFFF"/>
+  <line x1="220" y1="0" x2="220" y2="540" stroke="#E5DED2" stroke-width="1"/>
+
+  <!-- Logo + wordmark -->
+  <rect x="14" y="14" width="22" height="22" rx="6" fill="#FFFFFF" stroke="#D9401E" stroke-width="1.5"/>
+  <circle cx="25" cy="25" r="3" fill="#D9401E"/>
+  <text x="44" y="30" font-size="16" font-weight="700" fill="#1C1814" font-family="ui-serif, Georgia, 'Iowan Old Style', 'Times New Roman', serif">Bez Filtra</text>
 
   <!-- New chat button -->
-  <rect x="10" y="12" width="200" height="34" rx="9" fill="url(#grad)" opacity="0.85"/>
-  <text x="110" y="34" text-anchor="middle" font-size="12" font-weight="600" fill="white">+ Nowa rozmowa</text>
-
-  <!-- Wordmark -->
-  <text x="16" y="72" font-size="17" font-weight="700" fill="white">Bez</text>
-  <text x="46" y="72" font-size="17" font-weight="700" fill="url(#grad)"> Filtra</text>
+  <rect x="14" y="52" width="192" height="34" rx="9" fill="#FBFAF7" stroke="#E5DED2" stroke-width="1"/>
+  <text x="28" y="74" font-size="12" font-weight="500" fill="#6E655A">+ Nowa rozmowa</text>
 
   <!-- Section label -->
-  <text x="14" y="98" font-size="9" fill="rgba(255,255,255,0.28)" letter-spacing="1.5">DZIŚ</text>
+  <text x="16" y="110" font-size="9" fill="#948A7C" letter-spacing="1.5">DZIŚ</text>
 
   <!-- Conversations -->
-  <rect x="6" y="104" width="208" height="32" rx="7" fill="rgba(167,139,250,0.15)"/>
-  <text x="16" y="124" font-size="11" fill="rgba(255,255,255,0.9)">Jak działa silnik rakietowy</text>
+  <rect x="8" y="118" width="204" height="32" rx="7" fill="#FBE4DA" stroke="#D9401E" stroke-width="1"/>
+  <text x="18" y="139" font-size="11" fill="#1C1814">Jak działa silnik rakietowy</text>
 
-  <rect x="6" y="140" width="208" height="32" rx="7" fill="transparent"/>
-  <text x="16" y="160" font-size="11" fill="rgba(255,255,255,0.45)">Historia kryptografii</text>
+  <text x="18" y="175" font-size="11" fill="#6E655A">Historia kryptografii</text>
+  <text x="18" y="203" font-size="11" fill="#6E655A">Przepis na bigos</text>
 
-  <rect x="6" y="176" width="208" height="32" rx="7" fill="transparent"/>
-  <text x="16" y="196" font-size="11" fill="rgba(255,255,255,0.45)">Przepis na bigos</text>
-
-  <!-- Footer -->
-  <text x="110" y="526" text-anchor="middle" font-size="9" fill="rgba(255,255,255,0.18)">NullPointer Studio</text>
+  <!-- Sidebar bottom buttons -->
+  <rect x="14" y="470" width="192" height="30" rx="7" fill="#FFFFFF" stroke="#E5DED2" stroke-width="1"/>
+  <text x="28" y="489" font-size="11" fill="#6E655A">📊 Statystyki</text>
+  <rect x="14" y="504" width="192" height="30" rx="7" fill="#FFFFFF" stroke="#E5DED2" stroke-width="1"/>
+  <text x="28" y="523" font-size="11" fill="#6E655A">← Wyloguj</text>
 
   <!-- ── HEADER ── -->
-  <rect x="220" y="0" width="640" height="48" fill="rgba(255,255,255,0.02)" stroke="rgba(255,255,255,0.06)" stroke-width="0.5"/>
+  <rect x="220" y="0" width="640" height="48" fill="#FFFFFF"/>
+  <line x1="220" y1="48" x2="860" y2="48" stroke="#E5DED2" stroke-width="1"/>
 
   <!-- Model pill -->
-  <rect x="320" y="10" width="168" height="28" rx="14" fill="rgba(167,139,250,0.1)" stroke="rgba(167,139,250,0.22)" stroke-width="0.5"/>
-  <circle cx="336" cy="24" r="4" fill="#4ade80"/>
-  <text x="346" y="28" font-size="11" font-weight="500" fill="rgba(255,255,255,0.85)">🐬 Dolphin PL (8B) ▾</text>
+  <rect x="320" y="10" width="168" height="28" rx="14" fill="#FFFFFF" stroke="#D2C9B9" stroke-width="1"/>
+  <circle cx="336" cy="24" r="4" fill="#22C55E"/>
+  <text x="346" y="28" font-size="11" font-weight="500" fill="#1C1814">🐬 Dolphin PL (8B) ▾</text>
 
   <!-- Stats -->
-  <text x="504" y="28" font-size="10" fill="rgba(255,255,255,0.32)">📊 2.4k tok  🔋 3.2 Wh</text>
+  <text x="504" y="28" font-size="10" fill="#948A7C">📊 2.4k tok · 🔋 3.2 Wh</text>
 
   <!-- Persona button -->
-  <rect x="710" y="10" width="72" height="28" rx="7" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/>
-  <text x="746" y="28" text-anchor="middle" font-size="11" fill="rgba(255,255,255,0.55)">🎭 Persona</text>
+  <rect x="710" y="10" width="72" height="28" rx="7" fill="#FBFAF7" stroke="#E5DED2" stroke-width="1"/>
+  <text x="746" y="28" text-anchor="middle" font-size="11" fill="#6E655A">🎭 Persona</text>
 
   <!-- ── CHAT AREA ── -->
 
   <!-- User message -->
-  <rect x="570" y="68" width="270" height="44" rx="12" fill="url(#userbubble)" stroke="rgba(167,139,250,0.2)" stroke-width="0.5"/>
-  <text x="585" y="95" font-size="12" fill="rgba(255,255,255,0.9)">Jak działa silnik rakietowy?</text>
+  <rect x="570" y="68" width="270" height="44" rx="12" fill="#FFFFFF" stroke="#D2C9B9" stroke-width="1"/>
+  <text x="585" y="95" font-size="12" fill="#1C1814">Jak działa silnik rakietowy?</text>
 
   <!-- AI avatar + bubble -->
   <text x="234" y="138" font-size="18">🐬</text>
-  <rect x="258" y="122" width="550" height="270" rx="12" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.07)" stroke-width="0.5"/>
+  <rect x="258" y="122" width="550" height="270" rx="12" fill="#FFFFFF" stroke="#E5DED2" stroke-width="1"/>
 
   <!-- AI response content -->
-  <text x="274" y="148" font-size="12" font-weight="700" fill="rgba(255,255,255,0.92)">## Zasada działania silnika rakietowego 🚀</text>
+  <text x="274" y="148" font-size="12" font-weight="700" fill="#1C1814">## Zasada działania silnika rakietowego 🚀</text>
 
-  <text x="274" y="174" font-size="11" fill="rgba(255,255,255,0.65)">Silnik rakietowy działa na zasadzie </text>
-  <text x="474" y="174" font-size="11" font-weight="700" fill="rgba(255,255,255,0.9)">III zasady Newtona</text>
-  <text x="570" y="174" font-size="11" fill="rgba(255,255,255,0.65)"> - każda akcja</text>
-  <text x="274" y="190" font-size="11" fill="rgba(255,255,255,0.65)">wywołuje równą i przeciwną reakcję.</text>
+  <text x="274" y="174" font-size="11" fill="#6E655A">Silnik rakietowy działa na zasadzie </text>
+  <text x="474" y="174" font-size="11" font-weight="700" fill="#1C1814">III zasady Newtona</text>
+  <text x="570" y="174" font-size="11" fill="#6E655A"> - każda akcja</text>
+  <text x="274" y="190" font-size="11" fill="#6E655A">wywołuje równą i przeciwną reakcję.</text>
 
   <!-- Table header -->
-  <rect x="274" y="204" width="518" height="22" rx="4" fill="rgba(167,139,250,0.12)"/>
-  <text x="284" y="219" font-size="11" font-weight="600" fill="rgba(255,255,255,0.8)">Składnik</text>
-  <text x="440" y="219" font-size="11" font-weight="600" fill="rgba(255,255,255,0.8)">Funkcja</text>
+  <rect x="274" y="204" width="518" height="22" rx="4" fill="#FBFAF7"/>
+  <text x="284" y="219" font-size="11" font-weight="600" fill="#1C1814">Składnik</text>
+  <text x="440" y="219" font-size="11" font-weight="600" fill="#1C1814">Funkcja</text>
 
   <!-- Table rows -->
-  <line x1="274" y1="226" x2="792" y2="226" stroke="rgba(255,255,255,0.07)" stroke-width="0.5"/>
-  <text x="284" y="241" font-size="11" fill="rgba(255,255,255,0.6)">Komora spalania</text>
-  <text x="440" y="241" font-size="11" fill="rgba(255,255,255,0.6)">Mieszanie i spalanie paliwa</text>
+  <line x1="274" y1="226" x2="792" y2="226" stroke="#E5DED2" stroke-width="1"/>
+  <text x="284" y="241" font-size="11" fill="#6E655A">Komora spalania</text>
+  <text x="440" y="241" font-size="11" fill="#6E655A">Mieszanie i spalanie paliwa</text>
 
-  <line x1="274" y1="248" x2="792" y2="248" stroke="rgba(255,255,255,0.05)" stroke-width="0.5"/>
-  <text x="284" y="263" font-size="11" fill="rgba(255,255,255,0.6)">Dysza de Lavala</text>
-  <text x="440" y="263" font-size="11" fill="rgba(255,255,255,0.6)">Przyspieszanie gazów do naddźwiękowych</text>
+  <line x1="274" y1="248" x2="792" y2="248" stroke="#E5DED2" stroke-width="1"/>
+  <text x="284" y="263" font-size="11" fill="#6E655A">Dysza de Lavala</text>
+  <text x="440" y="263" font-size="11" fill="#6E655A">Przyspieszanie gazów do naddźwiękowych</text>
 
-  <line x1="274" y1="270" x2="792" y2="270" stroke="rgba(255,255,255,0.05)" stroke-width="0.5"/>
-  <text x="284" y="285" font-size="11" fill="rgba(255,255,255,0.6)">Turbopompa</text>
-  <text x="440" y="285" font-size="11" fill="rgba(255,255,255,0.6)">Tłoczenie paliwa pod ciśnieniem</text>
+  <line x1="274" y1="270" x2="792" y2="270" stroke="#E5DED2" stroke-width="1"/>
+  <text x="284" y="285" font-size="11" fill="#6E655A">Turbopompa</text>
+  <text x="440" y="285" font-size="11" fill="#6E655A">Tłoczenie paliwa pod ciśnieniem</text>
 
-  <line x1="274" y1="292" x2="792" y2="292" stroke="rgba(255,255,255,0.05)" stroke-width="0.5"/>
-  <text x="284" y="307" font-size="11" fill="rgba(255,255,255,0.6)">Paliwo</text>
-  <text x="440" y="307" font-size="11" fill="rgba(255,255,255,0.6)">Ciekły wodór + ciekły tlen (lub nafta)</text>
+  <line x1="274" y1="292" x2="792" y2="292" stroke="#E5DED2" stroke-width="1"/>
+  <text x="284" y="307" font-size="11" fill="#6E655A">Paliwo</text>
+  <text x="440" y="307" font-size="11" fill="#6E655A">Ciekły wodór + ciekły tlen (lub nafta)</text>
 
   <!-- Stats line -->
-  <text x="274" y="366" font-size="10" fill="rgba(255,255,255,0.28)">📊 128→342 tok · ⚡ 11.4 tok/s · ⏱ 29.9s · 🔋 0.54 Wh · 💧 1.0 ml</text>
+  <text x="274" y="366" font-size="10" fill="#948A7C">📊 128→342 tok · ⚡ 11.4 tok/s · ⏱ 29.9s · 🔋 0.54 Wh · 💧 1.0 ml</text>
 
   <!-- ── INPUT ── -->
-  <rect x="236" y="480" width="592" height="46" rx="13" fill="rgba(255,255,255,0.05)" stroke="rgba(167,139,250,0.2)" stroke-width="0.5"/>
-  <text x="256" y="508" font-size="12" fill="rgba(255,255,255,0.22)">Zapytaj o cokolwiek, bez ograniczeń…</text>
-  <rect x="802" y="490" width="26" height="26" rx="7" fill="url(#grad)" opacity="0.85"/>
-  <text x="815" y="508" text-anchor="middle" font-size="13" fill="white">↑</text>
+  <rect x="236" y="480" width="592" height="46" rx="12" fill="#FFFFFF" stroke="#D2C9B9" stroke-width="1"/>
+  <text x="256" y="508" font-size="12" fill="#948A7C">Zapytaj o cokolwiek, bez ograniczeń…</text>
+  <rect x="802" y="490" width="26" height="26" rx="7" fill="#D9401E"/>
+  <text x="815" y="508" text-anchor="middle" font-size="13" fill="#FFFFFF">↑</text>
 </svg>

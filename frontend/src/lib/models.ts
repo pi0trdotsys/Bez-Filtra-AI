@@ -18,13 +18,14 @@ interface ModelRule {
   meta: ModelMeta
 }
 
-// Kolory rodzin modeli (Tailwind *-400, jasność dobrana pod ciemne tło):
-const VIOLET = '167,139,250'  // Qwen (domyślny/marka)
-const PINK = '244,114,182'    // Dolphin
-const RED = '248,113,113'     // DeepSeek
-const AMBER = '251,191,36'    // Bielik
-const ORANGE = '251,146,60'   // Llama
-const SKY = '56,189,248'      // Mistral
+// Kolory rodzin modeli - stonowane, „drukowe" (używane wyłącznie jako mała
+// kropka/odznaka modelu, nie jako tint całego UI):
+const VIOLET = '204,94,35'    // Qwen (domyślny/marka) - ochra
+const PINK = '19,124,110'     // Dolphin - teal
+const RED = '177,60,45'       // DeepSeek - cegła
+const AMBER = '178,124,26'    // Bielik - złoto
+const ORANGE = '150,100,60'   // Llama - brąz
+const SKY = '58,96,143'       // Mistral - stalowy błękit
 
 const RULES: ModelRule[] = [
   {

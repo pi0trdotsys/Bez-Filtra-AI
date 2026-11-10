@@ -23,9 +23,9 @@ function IconButton({ onClick, label, children }: { onClick: () => void; label: 
       aria-label={label}
       title={label}
       className="flex items-center gap-1 rounded-md px-1.5 py-0.5 transition-colors"
-      style={{ color: 'rgba(255,255,255,0.4)', fontSize: 10 }}
-      onMouseEnter={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.85)')}
-      onMouseLeave={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.4)')}
+      style={{ color: 'var(--ink-faint)', fontSize: 10 }}
+      onMouseEnter={e => (e.currentTarget.style.color = 'var(--ink)')}
+      onMouseLeave={e => (e.currentTarget.style.color = 'var(--ink-faint)')}
     >
       {children}
     </button>
@@ -65,12 +65,8 @@ export function MessageBubble({ message, isStreaming, isLast, onRegenerate, onEd
         className="flex-shrink-0 flex items-center justify-center rounded-full text-base"
         style={{
           width: 28, height: 28,
-          background: isUser
-            ? 'rgba(255,255,255,0.1)'
-            : 'linear-gradient(135deg,rgba(var(--accent-rgb),0.3),rgba(96,165,250,0.3))',
-          border: isUser
-            ? '0.5px solid rgba(255,255,255,0.15)'
-            : '0.5px solid rgba(var(--accent-rgb),0.3)',
+          background: isUser ? 'var(--surface-2)' : 'var(--surface)',
+          border: isUser ? '1px solid var(--border-strong)' : '1px solid rgba(var(--accent-rgb),0.5)',
         }}
       >
         {isUser ? '👤' : '🐬'}
@@ -80,11 +76,10 @@ export function MessageBubble({ message, isStreaming, isLast, onRegenerate, onEd
         <div
           className="px-3 py-2 text-sm leading-relaxed w-full"
           style={{
-            borderRadius: isUser ? '14px 14px 4px 14px' : '14px 14px 14px 4px',
-            background: isUser ? 'rgba(var(--accent-rgb),0.2)' : 'rgba(255,255,255,0.06)',
-            border: isUser ? '0.5px solid rgba(var(--accent-rgb),0.3)' : '0.5px solid rgba(255,255,255,0.08)',
-            color: 'rgba(255,255,255,0.88)',
-            backdropFilter: 'blur(10px)',
+            borderRadius: isUser ? '12px 12px 3px 12px' : '12px 12px 12px 3px',
+            background: 'var(--surface)',
+            border: isUser ? '1px solid var(--border-strong)' : '1px solid var(--border)',
+            color: 'rgba(28,24,20,0.9)',
           }}
         >
           {editing ? (
@@ -99,16 +94,16 @@ export function MessageBubble({ message, isStreaming, isLast, onRegenerate, onEd
                 autoFocus
                 rows={Math.min(8, draft.split('\n').length + 1)}
                 className="bg-transparent border-none outline-none text-sm resize-none w-full"
-                style={{ color: 'rgba(255,255,255,0.95)', lineHeight: '1.5', fontFamily: 'inherit' }}
+                style={{ color: 'var(--ink)', lineHeight: '1.5', fontFamily: 'inherit' }}
               />
               <div className="flex gap-2 justify-end">
-                <button onClick={() => setEditing(false)} className="text-xs px-2 py-1 rounded-md" style={{ color: 'rgba(255,255,255,0.5)' }}>
+                <button onClick={() => setEditing(false)} className="text-xs px-2 py-1 rounded-md" style={{ color: 'var(--ink-soft)' }}>
                   Anuluj
                 </button>
                 <button
                   onClick={saveEdit}
                   className="text-xs px-2.5 py-1 rounded-md"
-                  style={{ background: 'linear-gradient(135deg,rgb(var(--accent-rgb)),rgba(var(--accent-rgb),0.55))', color: '#fff' }}
+                  style={{ background: 'var(--accent)', color: '#fff' }}
                 >
                   Zapisz i wyślij
                 </button>
@@ -141,9 +136,9 @@ export function MessageBubble({ message, isStreaming, isLast, onRegenerate, onEd
                 if (s.waterL != null)
                   parts.push({ icon: '💧', value: `${(s.waterL * 1000).toFixed(1)} ml`, title: 'zużycie wody (chłodzenie)' })
                 return (
-                  <div className="mt-2 pt-1.5 flex flex-wrap gap-x-3 gap-y-1 items-center" style={{ borderTop: '0.5px solid rgba(255,255,255,0.06)' }}>
+                  <div className="mt-2 pt-1.5 flex flex-wrap gap-x-3 gap-y-1 items-center" style={{ borderTop: '1px solid var(--border)' }}>
                     {interrupted && (
-                      <span style={{ fontSize: 10, color: 'rgba(248,113,113,0.8)', letterSpacing: '0.04em' }}>
+                      <span style={{ fontSize: 10, color: '#C0392B', letterSpacing: '0.04em' }}>
                         ⏹️ przerwano
                       </span>
                     )}
@@ -152,7 +147,7 @@ export function MessageBubble({ message, isStreaming, isLast, onRegenerate, onEd
                         key={p.icon}
                         title={p.title}
                         className="flex items-center gap-1"
-                        style={{ fontSize: 10, color: 'rgba(255,255,255,0.32)', letterSpacing: '0.01em' }}
+                        style={{ fontSize: 10, color: 'var(--ink-faint)', letterSpacing: '0.01em' }}
                       >
                         <span>{p.icon}</span>
                         <span>{p.value}</span>
@@ -170,7 +165,7 @@ export function MessageBubble({ message, isStreaming, isLast, onRegenerate, onEd
           <div
             className={`hover-actions flex items-center gap-1 px-1 opacity-0 group-hover:opacity-100 transition-opacity ${isUser ? 'flex-row-reverse' : 'flex-row'}`}
           >
-            <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.25)' }}>{fmtTime(message.createdAt)}</span>
+            <span style={{ fontSize: 10, color: 'var(--ink-faint)' }}>{fmtTime(message.createdAt)}</span>
             {!isUser && message.content && (
               <IconButton onClick={copy} label={copied ? 'Skopiowano' : 'Kopiuj odpowiedź'}>
                 {copied ? '✓ skopiowano' : '⧉ kopiuj'}

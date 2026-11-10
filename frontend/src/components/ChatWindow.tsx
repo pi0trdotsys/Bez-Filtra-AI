@@ -275,31 +275,9 @@ export function ChatWindow({ onLogout }: { onLogout: () => void }) {
     : !health.modelLoaded ? '#f59e0b'
     : '#22c55e'
 
-  const accentRgb = describeModel(selectedModel).accentRgb
-
   return (
-    <div className="relative flex h-screen w-screen overflow-hidden" style={{background:'linear-gradient(135deg,#0f0c29,#302b63,#24243e)'}}>
-      {/* Ambient glow w kolorze aktywnego modelu - płynny crossfade przy zmianie.
-          screen blend = realnie "świeci" na ciemnym tle zamiast płasko barwić.
-          Kolor wstrzyknięty dosłownie (nie przez zmienną), żeby stary i nowy
-          węzeł miały różne kolory i AnimatePresence mógł je przenikać. */}
-      <AnimatePresence>
-        <motion.div
-          key={accentRgb}
-          className="absolute inset-0 pointer-events-none"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.8, ease: 'easeInOut' }}
-          style={{
-            background:`radial-gradient(ellipse at 15% 45%,rgba(${accentRgb},0.28) 0%,transparent 55%),radial-gradient(ellipse at 85% 25%,rgba(${accentRgb},0.14) 0%,transparent 50%)`,
-            mixBlendMode: 'screen',
-          }}
-        />
-      </AnimatePresence>
-
-      {/* "System się przestraja" - pełnoekranowy skan + błysk narożników HUD,
-          za każdą zmianą modelu (patrz ModelSwitchFX.tsx). */}
+    <div className="relative flex h-screen w-screen overflow-hidden" style={{background:'var(--bg)'}}>
+      {/* Subtelny sygnał zmiany modelu (patrz ModelSwitchFX.tsx). */}
       <ModelSwitchFX triggerKey={selectedModel} />
 
       <motion.div
@@ -342,7 +320,7 @@ export function ChatWindow({ onLogout }: { onLogout: () => void }) {
         {/* ── Nagłówek ── */}
         <div
           className="flex items-center justify-between gap-2 px-3 sm:px-4 py-3 flex-shrink-0"
-          style={{borderBottom:'0.5px solid rgba(255,255,255,0.06)',background:'rgba(255,255,255,0.02)'}}
+          style={{borderBottom:'1px solid var(--border)',background:'var(--surface)'}}
         >
           <div className="flex items-center gap-2">
             <button
@@ -351,13 +329,13 @@ export function ChatWindow({ onLogout }: { onLogout: () => void }) {
               aria-label="Menu"
             >
               {[0,1,2].map(i => (
-                <span key={i} style={{display:'block',width:18,height:1.5,borderRadius:2,background:'rgba(255,255,255,0.6)'}} />
+                <span key={i} style={{display:'block',width:18,height:1.5,borderRadius:2,background:'var(--ink-soft)'}} />
               ))}
             </button>
             <button
               onClick={toggleSidebar}
               className="hidden md:flex items-center justify-center rounded-lg"
-              style={{width:30,height:30,color:'rgba(255,255,255,0.5)',border:'0.5px solid rgba(255,255,255,0.1)'}}
+              style={{width:30,height:30,color:'var(--ink-soft)',border:'1px solid var(--border)'}}
               title={sidebarCollapsed ? 'Pokaż panel' : 'Ukryj panel'}
             >
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -367,7 +345,7 @@ export function ChatWindow({ onLogout }: { onLogout: () => void }) {
             <button
               onClick={() => setPaletteOpen(true)}
               className="hidden md:flex items-center gap-1.5 rounded-lg px-2.5 h-[30px]"
-              style={{color:'rgba(255,255,255,0.4)',border:'0.5px solid rgba(255,255,255,0.1)',fontSize:11}}
+              style={{color:'var(--ink-soft)',border:'1px solid var(--border)',fontSize:11}}
             >
               🔍 <span>Szukaj</span><kbd style={{fontSize:10,opacity:0.6}}>⌘K</kbd>
             </button>
@@ -383,17 +361,17 @@ export function ChatWindow({ onLogout }: { onLogout: () => void }) {
               initial={{ opacity: 0.8, scale: 1 }}
               animate={{ opacity: 0, scale: 1.9 }}
               transition={{ duration: 0.55, ease: 'easeOut' }}
-              style={{ border: '1.5px solid rgb(var(--accent-rgb))' }}
+              style={{ border: '1.5px solid var(--accent)' }}
             />
             <button
               onClick={() => setModelPickerOpen(o => !o)}
               className="flex items-center gap-2 text-xs rounded-full pl-3 pr-2.5 py-1.5"
-              style={{background:'rgba(var(--accent-rgb),0.16)',border:'0.5px solid rgba(var(--accent-rgb),0.4)',color:'rgba(255,255,255,0.9)',boxShadow:'0 0 12px rgba(var(--accent-rgb),0.15)',transition:'background 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease'}}
+              style={{background:'var(--surface)',border:'1px solid var(--border-strong)',color:'var(--ink)',transition:'border-color 0.3s ease'}}
             >
               <motion.span
                 animate={health.status === 'checking' ? { opacity: [0.4,1,0.4] } : { opacity: 1 }}
                 transition={{ duration: 1.2, repeat: health.status === 'checking' ? Infinity : 0 }}
-                style={{display:'inline-block',width:7,height:7,borderRadius:'50%',background:statusColor,boxShadow:`0 0 6px ${statusColor}`,flexShrink:0}}
+                style={{display:'inline-block',width:7,height:7,borderRadius:'50%',background:statusColor,flexShrink:0}}
               />
               <span style={{fontWeight:500,whiteSpace:'nowrap'}}>{describeModel(selectedModel).emoji} {describeModel(selectedModel).label}</span>
               <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{opacity:0.5,flexShrink:0}}>
@@ -407,18 +385,18 @@ export function ChatWindow({ onLogout }: { onLogout: () => void }) {
                   <motion.div
                     initial={{opacity:0,y:-6,scale:0.97}} animate={{opacity:1,y:0,scale:1}} exit={{opacity:0,y:-6,scale:0.97}}
                     transition={{type:'spring',stiffness:340,damping:28}}
-                    className="absolute left-1/2 z-40 mt-2 rounded-2xl overflow-hidden"
+                    className="absolute left-1/2 z-40 mt-2 rounded-xl overflow-hidden"
                     style={{
                       top:'100%', transform:'translateX(-50%)', minWidth:260,
-                      background:'rgba(22,19,46,0.97)', backdropFilter:'blur(24px)',
-                      border:'0.5px solid rgba(var(--accent-rgb),0.25)', boxShadow:'0 16px 48px rgba(0,0,0,0.55)',
+                      background:'var(--surface)',
+                      border:'1px solid var(--border-strong)', boxShadow:'0 16px 48px rgba(28,24,20,0.18)',
                     }}
                   >
-                    <div className="px-4 pt-3 pb-2" style={{borderBottom:'0.5px solid rgba(255,255,255,0.07)'}}>
-                      <p style={{fontSize:10,letterSpacing:'0.14em',textTransform:'uppercase',color:'rgba(255,255,255,0.3)'}}>Wybierz model</p>
+                    <div className="px-4 pt-3 pb-2" style={{borderBottom:'1px solid var(--border)'}}>
+                      <p style={{fontSize:10,letterSpacing:'0.14em',textTransform:'uppercase',color:'var(--ink-faint)'}}>Wybierz model</p>
                     </div>
                     {models.length === 0 && (
-                      <p className="px-4 py-4 text-center" style={{fontSize:12,color:'rgba(255,255,255,0.35)'}}>
+                      <p className="px-4 py-4 text-center" style={{fontSize:12,color:'var(--ink-faint)'}}>
                         Ładowanie listy modeli…
                       </p>
                     )}
@@ -430,15 +408,15 @@ export function ChatWindow({ onLogout }: { onLogout: () => void }) {
                           key={name}
                           onClick={() => { handleSelectModel(name); setModelPickerOpen(false) }}
                           className="w-full flex items-start gap-3 px-4 py-3 text-left"
-                          style={{background: active ? 'rgba(var(--accent-rgb),0.13)' : 'transparent', borderBottom:'0.5px solid rgba(255,255,255,0.05)'}}
+                          style={{background: active ? 'var(--accent-soft)' : 'transparent', borderBottom:'1px solid var(--border)'}}
                         >
                           <span style={{fontSize:20,lineHeight:1,marginTop:2}}>{m.emoji}</span>
                           <span className="flex-1 min-w-0">
                             <span className="flex items-center gap-2">
-                              <span style={{fontSize:13,fontWeight:600,color:'rgba(255,255,255,0.92)'}}>{m.label}</span>
-                              {active && <span style={{fontSize:9,letterSpacing:'0.12em',textTransform:'uppercase',color:'rgb(var(--accent-rgb))',background:'rgba(var(--accent-rgb),0.15)',borderRadius:4,padding:'1px 5px'}}>aktywny</span>}
+                              <span style={{fontSize:13,fontWeight:600,color:'var(--ink)'}}>{m.label}</span>
+                              {active && <span style={{fontSize:9,letterSpacing:'0.12em',textTransform:'uppercase',color:'var(--accent-ink)',background:'var(--accent-soft)',borderRadius:4,padding:'1px 5px'}}>aktywny</span>}
                             </span>
-                            <span style={{fontSize:12,color:'rgba(255,255,255,0.45)',lineHeight:1.4,display:'block',marginTop:2}}>{m.desc}</span>
+                            <span style={{fontSize:12,color:'var(--ink-faint)',lineHeight:1.4,display:'block',marginTop:2}}>{m.desc}</span>
                           </span>
                         </button>
                       )
@@ -453,7 +431,7 @@ export function ChatWindow({ onLogout }: { onLogout: () => void }) {
             {sessionTokens > 0 && (
               <span
                 className="hidden sm:flex items-center gap-2 text-xs"
-                style={{color:'rgba(255,255,255,0.35)',fontFamily:'ui-monospace,monospace'}}
+                style={{color:'var(--ink-faint)',fontFamily:'ui-monospace,monospace'}}
                 title={`Sesja: ${formatTokens(sessionTokens)} tok · ${(sessionEnergyKWh*1000).toFixed(1)} Wh · ${(sessionWaterL*1000).toFixed(0)} ml`}
               >
                 <span>📊 {formatTokens(sessionTokens)} tok</span>
@@ -464,19 +442,19 @@ export function ChatWindow({ onLogout }: { onLogout: () => void }) {
             {health.gpuPercent !== null && (
               <span
                 className="hidden md:flex items-center gap-1.5 text-xs rounded-full px-2.5 py-1"
-                style={{background:'rgba(96,165,250,0.08)',border:'0.5px solid rgba(96,165,250,0.2)',fontFamily:'ui-monospace,monospace'}}
+                style={{background:'var(--surface-2)',border:'1px solid var(--border)',fontFamily:'ui-monospace,monospace'}}
                 title={`GPU: ${health.vramMB} MB · CPU: ${health.cpuPercent}%`}
               >
-                <span style={{color:'rgba(96,165,250,0.9)',fontWeight:600}}>GPU {health.gpuPercent}%</span>
-                <span style={{color:'rgba(255,255,255,0.2)'}}>·</span>
-                <span style={{color:'rgba(255,255,255,0.4)'}}>CPU {health.cpuPercent}%</span>
+                <span style={{color:'var(--ink-soft)',fontWeight:600}}>GPU {health.gpuPercent}%</span>
+                <span style={{color:'var(--border-strong)'}}>·</span>
+                <span style={{color:'var(--ink-faint)'}}>CPU {health.cpuPercent}%</span>
               </span>
             )}
             {health.modelLoading && (
               <motion.span
                 animate={{opacity:[0.5,1,0.5]}} transition={{duration:1.4,repeat:Infinity}}
                 className="hidden md:flex items-center gap-1.5 text-xs rounded-full px-2.5 py-1"
-                style={{background:'rgba(251,191,36,0.08)',border:'0.5px solid rgba(251,191,36,0.25)',color:'rgba(251,191,36,0.8)'}}
+                style={{background:'#FBF0D9',border:'1px solid #EFD9A7',color:'#B7791F'}}
               >
                 ⏳ Ładowanie modelu…
               </motion.span>
@@ -484,12 +462,12 @@ export function ChatWindow({ onLogout }: { onLogout: () => void }) {
             <button
               onClick={() => setShowPersona(true)}
               className="text-xs flex items-center gap-1"
-              style={{color: activeConv?.systemPrompt ? 'rgba(var(--accent-rgb),0.9)' : 'rgba(255,255,255,0.3)'}}
+              style={{color: activeConv?.systemPrompt ? 'var(--accent)' : 'var(--ink-faint)'}}
               title="Ustaw personę"
             >
               🎭 Persona{activeConv?.systemPrompt ? ' •' : ''}
             </button>
-            <button onClick={clearMessages} className="text-xs" style={{color:'rgba(255,255,255,0.3)'}}>
+            <button onClick={clearMessages} className="text-xs" style={{color:'var(--ink-faint)'}}>
               🗑️ Wyczyść
             </button>
           </div>
@@ -538,30 +516,28 @@ export function ChatWindow({ onLogout }: { onLogout: () => void }) {
                 className="flex items-center justify-center flex-1 min-h-48 px-2"
               >
                 <div
-                  className="max-w-md w-full text-center rounded-3xl px-5 sm:px-7 py-7 sm:py-8"
+                  className="max-w-md w-full text-center rounded-2xl px-5 sm:px-7 py-7 sm:py-8"
                   style={{
-                    background:'linear-gradient(160deg,rgba(var(--accent-rgb),0.12),rgba(96,165,250,0.06))',
-                    border:'0.5px solid rgba(var(--accent-rgb),0.22)',
-                    backdropFilter:'blur(20px)',
-                    boxShadow:'0 8px 40px rgba(120,80,255,0.12)',
+                    background:'var(--surface)',
+                    border:'1px solid var(--border)',
+                    boxShadow:'0 8px 40px rgba(28,24,20,0.06)',
                   }}
                 >
                   <motion.div
                     animate={{ y: [0,-5,0] }}
                     transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut' }}
                     className="inline-flex items-center justify-center mb-5"
-                    style={{width:48,height:48,borderRadius:15,background:'linear-gradient(135deg,#a78bfa,#60a5fa)',boxShadow:'0 10px 32px rgba(120,80,255,0.3)'}}
+                    style={{width:44,height:44,borderRadius:12,border:'2px solid var(--accent)'}}
                   >
-                    <div style={{width:17,height:17,borderRadius:6,background:'#181430'}} />
+                    <div style={{width:12,height:12,borderRadius:'50%',background:'var(--accent)'}} />
                   </motion.div>
-                  <h2 className="text-xl tracking-tight mb-2.5" style={{fontWeight:600}}>
-                    <span style={{color:'rgba(255,255,255,0.95)'}}>Bez</span>{' '}
-                    <span style={{background:'linear-gradient(135deg,#a78bfa,#60a5fa)',WebkitBackgroundClip:'text',backgroundClip:'text',WebkitTextFillColor:'transparent'}}>Filtra</span>
+                  <h2 className="serif text-2xl tracking-tight mb-2.5" style={{fontWeight:700,color:'var(--ink)'}}>
+                    Bez Filtra
                   </h2>
-                  <p className="text-sm leading-relaxed mx-auto" style={{color:'rgba(255,255,255,0.6)',maxWidth:340}}>
+                  <p className="text-sm leading-relaxed mx-auto" style={{color:'var(--ink-soft)',maxWidth:340}}>
                     Odpowiem na każde pytanie i rozwieję każdą wątpliwość - bez tematów tabu, bez ostrzeżeń, bez oceniania.
                   </p>
-                  <p className="mt-4" style={{fontSize:10,letterSpacing:'0.22em',color:'rgba(255,255,255,0.25)',textTransform:'uppercase'}}>
+                  <p className="mt-4" style={{fontSize:10,letterSpacing:'0.22em',color:'var(--ink-faint)',textTransform:'uppercase'}}>
                     bez cenzury · bez tematów tabu
                   </p>
                   <div className="flex flex-col gap-1.5 mt-7">
@@ -572,9 +548,9 @@ export function ChatWindow({ onLogout }: { onLogout: () => void }) {
                         initial={{ opacity: 0, y: 6 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.15 + idx * 0.06 }}
-                        whileHover={{ x: 3, color: 'rgba(255,255,255,0.95)' }}
+                        whileHover={{ x: 3, color: 'var(--ink)' }}
                         className="text-left text-sm rounded-lg px-3 py-2 flex items-start gap-2"
-                        style={{color:'rgba(255,255,255,0.55)'}}
+                        style={{color:'var(--ink-soft)'}}
                       >
                         <span>{p.icon}</span><span>{p.text}</span>
                       </motion.button>
@@ -602,7 +578,7 @@ export function ChatWindow({ onLogout }: { onLogout: () => void }) {
             >
               <div
                 className="flex items-center gap-2.5 text-xs rounded-full pl-3 pr-3.5 py-2"
-                style={{background:'rgba(var(--accent-rgb),0.1)',border:'0.5px solid rgba(var(--accent-rgb),0.22)',color:'rgba(255,255,255,0.8)'}}
+                style={{background:'var(--surface)',border:'1px solid var(--border-strong)',color:'var(--ink-soft)'}}
               >
                 <ThinkingBars height={13} />
                 <AnimatePresence mode="wait">
@@ -615,21 +591,21 @@ export function ChatWindow({ onLogout }: { onLogout: () => void }) {
                     {thinkingStatus(elapsedMs, liveTokens > 0)}
                   </motion.span>
                 </AnimatePresence>
-                <span style={{color:'rgba(255,255,255,0.25)'}}>·</span>
-                <span style={{fontFamily:'ui-monospace,monospace',fontVariantNumeric:'tabular-nums',color:'rgba(255,255,255,0.55)'}}>
+                <span style={{color:'var(--border-strong)'}}>·</span>
+                <span style={{fontFamily:'ui-monospace,monospace',fontVariantNumeric:'tabular-nums',color:'var(--ink-faint)'}}>
                   {formatTime(elapsedMs)}
                 </span>
                 {liveTokens > 0 && (
                   <>
-                    <span style={{color:'rgba(255,255,255,0.25)'}}>·</span>
+                    <span style={{color:'var(--border-strong)'}}>·</span>
                     <span style={{fontVariantNumeric:'tabular-nums'}}>
-                      <span style={{fontWeight:600,color:'rgba(var(--accent-rgb),0.95)'}}>{liveTokens}</span>{' '}
-                      <span style={{color:'rgba(255,255,255,0.5)'}}>{plTokens(liveTokens)}</span>
+                      <span style={{fontWeight:600,color:'var(--accent)'}}>{liveTokens}</span>{' '}
+                      <span style={{color:'var(--ink-soft)'}}>{plTokens(liveTokens)}</span>
                     </span>
                   </>
                 )}
               </div>
-              <p style={{fontSize:10,color:'rgba(255,255,255,0.28)'}}>
+              <p style={{fontSize:10,color:'var(--ink-faint)'}}>
                 {estimateMs > 0
                   ? `Zwykle zajmuje ~${formatTime(estimateMs)} · odpowiedź na pewno przyjdzie`
                   : 'Trudniejsze pytania mogą potrwać dłużej - odpowiedź na pewno przyjdzie'}
@@ -638,7 +614,7 @@ export function ChatWindow({ onLogout }: { onLogout: () => void }) {
           )}
 
           {error && (
-            <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-red-400 text-sm text-center">
+            <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-sm text-center" style={{ color: '#C0392B' }}>
               ⚠️ {error}
             </motion.p>
           )}
@@ -657,7 +633,7 @@ export function ChatWindow({ onLogout }: { onLogout: () => void }) {
               whileTap={{ scale: 0.95 }}
               aria-label="Przewiń na dół"
               className="absolute left-1/2 -translate-x-1/2 z-20 flex items-center justify-center rounded-full"
-              style={{bottom:88,width:36,height:36,background:'rgba(40,36,70,0.85)',backdropFilter:'blur(12px)',border:'0.5px solid rgba(var(--accent-rgb),0.35)',boxShadow:'0 6px 20px rgba(0,0,0,0.4)',color:'rgba(255,255,255,0.85)'}}
+              style={{bottom:88,width:36,height:36,background:'var(--surface)',border:'1px solid var(--border-strong)',boxShadow:'0 6px 20px rgba(28,24,20,0.15)',color:'var(--ink)'}}
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <polyline points="6 9 12 15 18 9" />
@@ -668,11 +644,11 @@ export function ChatWindow({ onLogout }: { onLogout: () => void }) {
 
         <div
           className="px-3 sm:px-4 pt-2 flex-shrink-0 safe-bottom"
-          style={{borderTop:'0.5px solid rgba(255,255,255,0.06)',background:'rgba(255,255,255,0.02)'}}
+          style={{borderTop:'1px solid var(--border)',background:'var(--surface)'}}
         >
           <div
-            className="flex gap-2 items-end rounded-2xl px-3 py-2"
-            style={{background:'rgba(255,255,255,0.06)',backdropFilter:'blur(20px)',border:'0.5px solid rgba(255,255,255,0.12)'}}
+            className="flex gap-2 items-end rounded-xl px-3 py-2"
+            style={{background:'var(--surface)',border:'1px solid var(--border-strong)'}}
           >
             <textarea
               ref={textareaRef}
@@ -684,7 +660,7 @@ export function ChatWindow({ onLogout }: { onLogout: () => void }) {
               rows={1}
               disabled={isStreaming}
               className="flex-1 bg-transparent border-none outline-none text-sm resize-none"
-              style={{color:'rgba(255,255,255,0.9)',lineHeight:'1.5',maxHeight:120,fontFamily:'inherit'}}
+              style={{color:'var(--ink)',lineHeight:'1.5',maxHeight:120,fontFamily:'inherit'}}
             />
             {isStreaming ? (
               <motion.button
@@ -696,7 +672,7 @@ export function ChatWindow({ onLogout }: { onLogout: () => void }) {
                 whileHover={{ scale: 1.08 }}
                 whileTap={{ scale: 0.92 }}
                 className="flex-shrink-0 flex items-center justify-center rounded-xl"
-                style={{width:34,height:34,background:'linear-gradient(135deg,#f87171,#ef4444)',border:'none'}}
+                style={{width:34,height:34,background:'var(--ink)',border:'none'}}
               >
                 <span style={{display:'block',width:11,height:11,borderRadius:3,background:'#fff'}} />
               </motion.button>
@@ -705,7 +681,7 @@ export function ChatWindow({ onLogout }: { onLogout: () => void }) {
                 onClick={() => handleSubmit()}
                 disabled={!input.trim()}
                 className="flex-shrink-0 flex items-center justify-center rounded-xl transition-opacity disabled:opacity-40"
-                style={{width:34,height:34,background:'linear-gradient(135deg,rgb(var(--accent-rgb)),rgba(var(--accent-rgb),0.55))',border:'none'}}
+                style={{width:34,height:34,background:'var(--accent)',border:'none'}}
               >
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                   <line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/>
@@ -713,7 +689,7 @@ export function ChatWindow({ onLogout }: { onLogout: () => void }) {
               </button>
             )}
           </div>
-          <p className="text-center mt-1.5" style={{fontSize:10,color:'rgba(255,255,255,0.18)'}}>
+          <p className="text-center mt-1.5" style={{fontSize:10,color:'var(--ink-faint)'}}>
             {isStreaming ? '⏹️ Esc = zatrzymaj generowanie' : '↑ Enter = wyślij · Shift+Enter = nowa linia'}
           </p>
         </div>

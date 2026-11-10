@@ -1,12 +1,11 @@
 import { motion } from 'framer-motion'
 
-// Autorska animacja "odpowiedź w toku" - gradientowe słupki falujące jak equalizer,
-// w kolorze aktualnie wybranego modelu (--accent-rgb, patrz ChatWindow/lib/models.ts).
-// Spójne z resztą interfejsu, nie generyczne 3 kropki.
+// Wskaźnik „odpowiedź w toku" - solidne słupki w kolorze modelu (--accent-rgb),
+// bez gradientów. Spójne z jasnym, edytorskim motywem.
 export function ThinkingBars({ height = 15 }: { height?: number }) {
   const bars = [0, 1, 2, 3, 4]
   return (
-    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 2.5, height }}>
+    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 3, height }}>
       {bars.map(i => (
         <motion.span
           key={i}
@@ -20,9 +19,9 @@ export function ThinkingBars({ height = 15 }: { height?: number }) {
           style={{
             width: 3,
             height,
-            borderRadius: 3,
+            borderRadius: 2,
             transformOrigin: 'center',
-            background: 'linear-gradient(180deg,rgb(var(--accent-rgb)),rgba(var(--accent-rgb),0.4))',
+            background: 'rgb(var(--accent-rgb))',
           }}
         />
       ))}

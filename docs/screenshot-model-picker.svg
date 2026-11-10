@@ -1,54 +1,43 @@
 <svg viewBox="0 0 360 260" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif">
-  <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#0f0c29"/>
-      <stop offset="1" stop-color="#1a1730"/>
-    </linearGradient>
-    <linearGradient id="grad" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#a78bfa"/>
-      <stop offset="1" stop-color="#60a5fa"/>
-    </linearGradient>
-  </defs>
-
-  <rect width="360" height="260" fill="url(#bg)"/>
-  <rect width="360" height="260" fill="rgba(0,0,0,0.35)"/>
+  <!-- Tło: papier + przyciemnienie -->
+  <rect width="360" height="260" fill="#F7F4EF"/>
+  <rect width="360" height="260" fill="rgba(28,24,20,0.35)"/>
 
   <!-- Trigger pill (za dropdownem) -->
-  <rect x="96" y="14" width="168" height="28" rx="14" fill="rgba(167,139,250,0.1)" stroke="rgba(167,139,250,0.22)" stroke-width="0.5"/>
-  <circle cx="112" cy="28" r="4" fill="#4ade80"/>
-  <text x="121" y="32" font-size="11" font-weight="500" fill="rgba(255,255,255,0.85)">🐬 Dolphin PL (8B) ▾</text>
+  <rect x="96" y="14" width="168" height="28" rx="14" fill="#FFFFFF" stroke="#D2C9B9" stroke-width="1"/>
+  <circle cx="112" cy="28" r="4" fill="#22C55E"/>
+  <text x="121" y="32" font-size="11" font-weight="500" fill="#1C1814">🐬 Dolphin PL (8B) ▾</text>
 
   <!-- Dropdown card -->
-  <rect x="60" y="50" width="240" height="196" rx="14" fill="rgba(22,19,46,0.98)" stroke="rgba(167,139,250,0.25)" stroke-width="0.5"/>
+  <rect x="60" y="50" width="240" height="196" rx="12" fill="#FFFFFF" stroke="#D2C9B9" stroke-width="1"/>
 
   <!-- Header -->
-  <text x="78" y="72" font-size="9" fill="rgba(255,255,255,0.3)" letter-spacing="2">WYBIERZ MODEL</text>
-  <line x1="60" y1="82" x2="300" y2="82" stroke="rgba(255,255,255,0.07)" stroke-width="0.5"/>
+  <text x="78" y="72" font-size="9" fill="#948A7C" letter-spacing="2">WYBIERZ MODEL</text>
+  <line x1="60" y1="82" x2="300" y2="82" stroke="#E5DED2" stroke-width="1"/>
 
   <!-- Model 1 - active -->
-  <rect x="60" y="82" width="240" height="82" fill="rgba(167,139,250,0.12)"/>
+  <rect x="60" y="82" width="240" height="82" fill="#FBE4DA"/>
   <text x="78" y="114" font-size="20">🐬</text>
-  <text x="106" y="108" font-size="12" font-weight="700" fill="rgba(255,255,255,0.92)">Dolphin PL (8B)</text>
-  <rect x="218" y="96" width="42" height="14" rx="4" fill="rgba(167,139,250,0.25)"/>
-  <text x="239" y="107" text-anchor="middle" font-size="8" fill="#c4b5fd" letter-spacing="0.5">AKTYWNY</text>
-  <text x="106" y="124" font-size="10" fill="rgba(255,255,255,0.45)">Szybki - kilka sekund odpowiedzi.</text>
-  <text x="106" y="138" font-size="10" fill="rgba(255,255,255,0.45)">Bez cenzury, bez ograniczeń, po polsku.</text>
+  <text x="106" y="108" font-size="12" font-weight="700" fill="#1C1814">Dolphin PL (8B)</text>
+  <text x="218" y="107" font-size="8" font-weight="600" fill="#B93316" letter-spacing="0.5">AKTYWNY</text>
+  <text x="106" y="124" font-size="10" fill="#6E655A">Szybki - kilka sekund odpowiedzi.</text>
+  <text x="106" y="138" font-size="10" fill="#6E655A">Bez cenzury, bez ograniczeń, po polsku.</text>
   <!-- tags -->
-  <rect x="106" y="148" width="52" height="13" rx="3" fill="rgba(96,165,250,0.15)"/>
-  <text x="132" y="158" text-anchor="middle" font-size="8" fill="rgba(96,165,250,0.8)">bez cenzury</text>
-  <rect x="164" y="148" width="36" height="13" rx="3" fill="rgba(96,165,250,0.15)"/>
-  <text x="182" y="158" text-anchor="middle" font-size="8" fill="rgba(96,165,250,0.8)">szybki</text>
+  <rect x="106" y="148" width="52" height="13" rx="3" fill="#FBFAF7" stroke="#E5DED2" stroke-width="1"/>
+  <text x="132" y="158" text-anchor="middle" font-size="8" fill="#6E655A">bez cenzury</text>
+  <rect x="164" y="148" width="36" height="13" rx="3" fill="#FBFAF7" stroke="#E5DED2" stroke-width="1"/>
+  <text x="182" y="158" text-anchor="middle" font-size="8" fill="#6E655A">szybki</text>
 
-  <line x1="60" y1="164" x2="300" y2="164" stroke="rgba(255,255,255,0.06)" stroke-width="0.5"/>
+  <line x1="60" y1="164" x2="300" y2="164" stroke="#E5DED2" stroke-width="1"/>
 
   <!-- Model 2 -->
   <text x="78" y="196" font-size="20">🧠</text>
-  <text x="106" y="190" font-size="12" font-weight="700" fill="rgba(255,255,255,0.85)">Qwen 2.5 Abliterated (14B)</text>
-  <text x="106" y="206" font-size="10" fill="rgba(255,255,255,0.4)">Najmądrzejszy - lepsza analiza.</text>
-  <text x="106" y="220" font-size="10" fill="rgba(255,255,255,0.4)">Wolniejszy, warto poczekać.</text>
+  <text x="106" y="190" font-size="12" font-weight="700" fill="#1C1814">Qwen 2.5 Abliterated (14B)</text>
+  <text x="106" y="206" font-size="10" fill="#6E655A">Najmądrzejszy - lepsza analiza.</text>
+  <text x="106" y="220" font-size="10" fill="#6E655A">Wolniejszy, warto poczekać.</text>
   <!-- tags -->
-  <rect x="106" y="230" width="52" height="13" rx="3" fill="rgba(167,139,250,0.15)"/>
-  <text x="132" y="240" text-anchor="middle" font-size="8" fill="rgba(167,139,250,0.8)">bez cenzury</text>
-  <rect x="164" y="230" width="62" height="13" rx="3" fill="rgba(167,139,250,0.15)"/>
-  <text x="195" y="240" text-anchor="middle" font-size="8" fill="rgba(167,139,250,0.8)">najmądrzejszy</text>
+  <rect x="106" y="230" width="52" height="13" rx="3" fill="#FBFAF7" stroke="#E5DED2" stroke-width="1"/>
+  <text x="132" y="240" text-anchor="middle" font-size="8" fill="#6E655A">bez cenzury</text>
+  <rect x="164" y="230" width="62" height="13" rx="3" fill="#FBFAF7" stroke="#E5DED2" stroke-width="1"/>
+  <text x="195" y="240" text-anchor="middle" font-size="8" fill="#6E655A">najmądrzejszy</text>
 </svg>

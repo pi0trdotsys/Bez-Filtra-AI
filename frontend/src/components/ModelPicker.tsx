@@ -46,15 +46,15 @@ export function ModelPicker({ health, models, value, defaultModel, onChange, hin
         type="button"
         onClick={toggle}
         className="flex items-center gap-2 text-xs rounded-full pl-3 pr-2.5 py-1.5 transition-colors"
-        style={{background:'rgba(167,139,250,0.1)',border:'0.5px solid rgba(167,139,250,0.22)',color:'rgba(255,255,255,0.85)'}}
+        style={{background:'var(--surface)',border:'1px solid var(--border-strong)',color:'var(--ink)'}}
       >
         <motion.span
           animate={health.status === 'checking' ? { opacity: [0.4, 1, 0.4] } : { opacity: 1 }}
           transition={{ duration: 1.2, repeat: health.status === 'checking' ? Infinity : 0 }}
-          style={{display:'inline-block',width:7,height:7,borderRadius:'50%',background:statusColor,boxShadow:`0 0 6px ${statusColor}`}}
+          style={{display:'inline-block',width:7,height:7,borderRadius:'50%',background:statusColor}}
         />
         <span style={{fontWeight:500}}>{currentLabel}</span>
-        <span style={{color:'rgba(255,255,255,0.4)',fontSize:11}}>· zmień</span>
+        <span style={{color:'var(--ink-faint)',fontSize:11}}>· zmień</span>
         <motion.svg
           animate={{ rotate: open ? 180 : 0 }} transition={{ duration: 0.2 }}
           width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"
@@ -74,8 +74,8 @@ export function ModelPicker({ health, models, value, defaultModel, onChange, hin
             className="absolute z-40 left-0 mt-2 rounded-lg px-2.5 py-1.5 whitespace-nowrap"
             style={{
               top: '100%',
-              background:'linear-gradient(135deg,rgba(167,139,250,0.95),rgba(96,165,250,0.95))',
-              boxShadow:'0 6px 20px rgba(120,80,255,0.35)',
+              background:'var(--ink)',
+              boxShadow:'0 6px 20px rgba(28,24,20,0.2)',
               fontSize:11,fontWeight:500,color:'#fff',
             }}
           >
@@ -95,17 +95,17 @@ export function ModelPicker({ health, models, value, defaultModel, onChange, hin
             style={{
               top: '100%',
               width: 320, maxWidth: 'min(320px, calc(100vw - 32px))', maxHeight: '70vh', overflowY: 'auto',
-              background: 'rgba(30,27,55,0.92)', backdropFilter: 'blur(24px)',
-              border: '0.5px solid rgba(167,139,250,0.25)', boxShadow: '0 16px 50px rgba(0,0,0,0.45)',
+              background: 'var(--surface)',
+              border: '1px solid var(--border-strong)', boxShadow: '0 16px 50px rgba(28,24,20,0.18)',
             }}
           >
-            <div className="px-3 py-2" style={{borderBottom:'0.5px solid rgba(255,255,255,0.08)'}}>
-              <p className="text-xs font-semibold" style={{color:'rgba(255,255,255,0.85)'}}>Wybierz model</p>
-              <p style={{fontSize:10,color:'rgba(255,255,255,0.4)'}}>Każdy nadaje się do czegoś innego</p>
+            <div className="px-3 py-2" style={{borderBottom:'1px solid var(--border)'}}>
+              <p className="text-xs font-semibold" style={{color:'var(--ink)'}}>Wybierz model</p>
+              <p style={{fontSize:10,color:'var(--ink-faint)'}}>Każdy nadaje się do czegoś innego</p>
             </div>
             <div className="p-1.5 flex flex-col gap-1">
               {models.length === 0 && (
-                <p className="text-xs text-center py-4" style={{color:'rgba(255,255,255,0.35)'}}>
+                <p className="text-xs text-center py-4" style={{color:'var(--ink-faint)'}}>
                   Brak dostępnych modeli
                 </p>
               )}
@@ -117,29 +117,29 @@ export function ModelPicker({ health, models, value, defaultModel, onChange, hin
                     key={m.name}
                     type="button"
                     onClick={() => { onChange(m.name); setOpen(false) }}
-                    whileHover={{ scale: 1.015, backgroundColor: 'rgba(167,139,250,0.1)' }}
+                    whileHover={{ scale: 1.015, backgroundColor: 'var(--accent-soft)' }}
                     whileTap={{ scale: 0.98 }}
                     className="text-left rounded-xl px-3 py-2.5"
                     style={{
-                      background: active ? 'rgba(167,139,250,0.16)' : 'transparent',
-                      border: active ? '0.5px solid rgba(167,139,250,0.3)' : '0.5px solid transparent',
+                      background: active ? 'var(--accent-soft)' : 'transparent',
+                      border: active ? '1px solid var(--accent)' : '1px solid transparent',
                     }}
                   >
                     <div className="flex items-center justify-between gap-2">
-                      <span className="flex items-center gap-1.5 text-sm font-medium" style={{color:'rgba(255,255,255,0.92)'}}>
+                      <span className="flex items-center gap-1.5 text-sm font-medium" style={{color:'var(--ink)'}}>
                         <span>{meta.emoji}</span>
                         {meta.label}
                         {active && (
                           <motion.span
                             initial={{ scale: 0 }} animate={{ scale: 1 }}
                             transition={{ type: 'spring', stiffness: 500, damping: 18 }}
-                            style={{color:'#86efac',fontSize:12}}
+                            style={{color:'#2E7D4F',fontSize:12}}
                           >
                             ✓
                           </motion.span>
                         )}
                       </span>
-                      <span style={{fontSize:10,color:'rgba(255,255,255,0.3)'}}>
+                      <span style={{fontSize:10,color:'var(--ink-faint)'}}>
                         {m.sizeMB >= 1000 ? `${(m.sizeMB / 1000).toFixed(1)} GB` : `${m.sizeMB} MB`}
                       </span>
                     </div>
@@ -150,8 +150,8 @@ export function ModelPicker({ health, models, value, defaultModel, onChange, hin
                             key={t}
                             style={{
                               fontSize:9,letterSpacing:'0.02em',padding:'1px 6px',borderRadius:99,
-                              background:'rgba(96,165,250,0.14)',border:'0.5px solid rgba(96,165,250,0.25)',
-                              color:'rgba(147,197,253,0.9)',
+                              background:'var(--surface-2)',border:'1px solid var(--border)',
+                              color:'var(--ink-soft)',
                             }}
                           >
                             {t}
@@ -159,7 +159,7 @@ export function ModelPicker({ health, models, value, defaultModel, onChange, hin
                         ))}
                       </div>
                     )}
-                    <p className="mt-1.5 leading-snug" style={{fontSize:11,color:'rgba(255,255,255,0.55)'}}>
+                    <p className="mt-1.5 leading-snug" style={{fontSize:11,color:'var(--ink-faint)'}}>
                       {meta.desc}
                     </p>
                   </motion.button>

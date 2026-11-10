@@ -102,7 +102,7 @@ export function CommandPalette({
       initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
       onClick={onClose}
       className="fixed inset-0 z-50 flex items-start justify-center p-4"
-      style={{ background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(6px)', paddingTop: '12vh' }}
+      style={{ background: 'rgba(28,24,20,0.4)', paddingTop: '12vh' }}
     >
       <motion.div
         initial={{ opacity: 0, y: -16, scale: 0.98 }}
@@ -110,15 +110,15 @@ export function CommandPalette({
         exit={{ opacity: 0, y: -16, scale: 0.98 }}
         transition={{ type: 'spring', stiffness: 300, damping: 26 }}
         onClick={e => e.stopPropagation()}
-        className="w-full rounded-2xl overflow-hidden"
+        className="w-full rounded-xl overflow-hidden"
         style={{
           maxWidth: 520,
-          background: 'rgba(30,27,55,0.96)', backdropFilter: 'blur(24px)',
-          border: '0.5px solid rgba(var(--accent-rgb),0.3)', boxShadow: '0 24px 70px rgba(0,0,0,0.55)',
+          background: 'var(--surface)',
+          border: '1px solid var(--border-strong)', boxShadow: '0 24px 70px rgba(28,24,20,0.2)',
         }}
       >
-        <div className="flex items-center gap-2 px-4 py-3" style={{ borderBottom: '0.5px solid rgba(255,255,255,0.08)' }}>
-          <span style={{ color: 'rgba(255,255,255,0.4)' }}>🔍</span>
+        <div className="flex items-center gap-2 px-4 py-3" style={{ borderBottom: '1px solid var(--border)' }}>
+          <span style={{ color: 'var(--ink-faint)' }}>🔍</span>
           <input
             value={query}
             autoFocus
@@ -126,14 +126,14 @@ export function CommandPalette({
             onKeyDown={onKey}
             placeholder="Szukaj rozmów, zmień model, wykonaj akcję…"
             className="flex-1 bg-transparent border-none outline-none text-sm"
-            style={{ color: 'rgba(255,255,255,0.95)' }}
+            style={{ color: 'var(--ink)' }}
           />
-          <kbd style={{ fontSize: 10, color: 'rgba(255,255,255,0.35)', border: '0.5px solid rgba(255,255,255,0.15)', borderRadius: 4, padding: '1px 5px' }}>Esc</kbd>
+          <kbd style={{ fontSize: 10, color: 'var(--ink-faint)', border: '1px solid var(--border-strong)', borderRadius: 4, padding: '1px 5px' }}>Esc</kbd>
         </div>
 
         <div ref={listRef} className="overflow-y-auto p-1.5" style={{ maxHeight: '50vh' }}>
           {items.length === 0 && (
-            <p className="text-sm text-center py-6" style={{ color: 'rgba(255,255,255,0.35)' }}>Brak wyników</p>
+            <p className="text-sm text-center py-6" style={{ color: 'var(--ink-faint)' }}>Brak wyników</p>
           )}
           {items.map((it, i) => (
             <button
@@ -142,12 +142,12 @@ export function CommandPalette({
               onMouseEnter={() => setSel(i)}
               onClick={() => activate(i)}
               className="w-full flex items-center gap-2.5 text-left rounded-xl px-3 py-2"
-              style={{ background: i === sel ? 'rgba(var(--accent-rgb),0.16)' : 'transparent' }}
+              style={{ background: i === sel ? 'var(--accent-soft)' : 'transparent' }}
             >
               <span style={{ fontSize: 15, width: 20, textAlign: 'center' }}>{it.icon}</span>
               <span className="flex-1 min-w-0">
-                <span className="block text-sm truncate" style={{ color: 'rgba(255,255,255,0.92)' }}>{it.label}</span>
-                {it.sub && <span className="block text-xs truncate" style={{ color: 'rgba(255,255,255,0.4)' }}>{it.sub}</span>}
+                <span className="block text-sm truncate" style={{ color: 'var(--ink)' }}>{it.label}</span>
+                {it.sub && <span className="block text-xs truncate" style={{ color: 'var(--ink-faint)' }}>{it.sub}</span>}
               </span>
             </button>
           ))}
