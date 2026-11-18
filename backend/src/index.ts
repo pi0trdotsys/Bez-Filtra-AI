@@ -27,6 +27,24 @@ function modelOptions(model: string): Record<string, unknown> {
   return base
 }
 
+// Streszczenie starszej części rozmowy (używa mniejszego modelu, jeśli ustawiony fallback).
+async function summarizeConversation(older: { role: string; content: string }[], model: string): Promise<string> {
+  const text = older
+    .map(m => `${m.role === 'user' ? 'Użytkownik' : 'Asystent'}: ${m.content}`)
+    .join('\n')
+    .slice(-6000)
+  const resp = await ollama.chat({
+    model,
+    messages: [
+      { role: 'system', content: 'Streścisz krótko dotychczasową rozmowę po polsku. Zachowaj najważniejsze fakty, ustalenia, liczby i kontekst. Odpowiedz 2-4 zdaniami, bez nagłówków.' },
+      { role: 'user', content: text },
+    ],
+    stream: false,
+    options: { temperature: 0.2, num_predict: 200 },
+  })
+  return (resp.message.content || '').trim()
+}
+
 // Szacunkowe zużycie zasobów (konfigurowalne przez env)
 const POWER_WATTS = Number(process.env.POWER_WATTS) || 65 // pobór całego mini-PC pod obciążeniem CPU
 const WATER_L_PER_KWH = Number(process.env.WATER_L_PER_KWH) || 1.8 // orientacyjny ślad wodny energii elektrycznej
@@ -239,12 +257,23 @@ app.post('/api/chat', requireAuth, async (req, res) => {
   // Okno przesuwne: do modelu trafia tylko system + ostatnie N wiadomości,
   // żeby skrócić czas przetwarzania promptu przy długich rozmowach.
   const trimmed = messages.slice(-MAX_CONTEXT_MESSAGES)
+  // Streszczenie starszej części rozmowy - zamiast bezpowrotnie gubić kontekst.
+  let historySummary: { role: string; content: string } | null = null
+  if (messages.length > MAX_CONTEXT_MESSAGES) {
+    const older = messages.slice(0, messages.length - MAX_CONTEXT_MESSAGES)
+    try {
+      const summary = await summarizeConversation(older, FALLBACK_MODEL || model)
+      if (summary) historySummary = { role: 'system', content: `Podsumowanie wcześniejszej części rozmowy:\n${summary}` }
+    } catch (e) {
+      log(`⚠ streszczenie nieudane: ${e instanceof Error ? e.message : String(e)}`)
+    }
+  }
   // Persona/własny system prompt z danej rozmowy - jako druga wiadomość systemowa
   const personaPrompt =
     typeof system === 'string' && system.trim()
       ? [{ role: 'system', content: `Dodatkowe instrukcje / persona od użytkownika (stosuj je, o ile nie są sprzeczne z powyższym):\n${system.trim()}` }]
       : []
-  const messagesWithSystem = [systemPrompt, ...personaPrompt, ...trimmed]
+  const messagesWithSystem = [systemPrompt, ...personaPrompt, ...(historySummary ? [historySummary] : []), ...trimmed]
 
   const lastUser = [...messages].reverse().find(m => m.role === 'user')?.content ?? ''
   const preview = lastUser.replace(/\s+/g, ' ').slice(0, 80)
@@ -369,6 +398,28 @@ app.post('/api/chat', requireAuth, async (req, res) => {
   } finally {
     clearInterval(heartbeat)
     if (!res.writableEnded) res.end()
+  }
+})
+
+app.post('/api/title', requireAuth, async (req, res) => {
+  const { text } = req.body as { text?: string }
+  const q = (text ?? '').trim()
+  if (!q) { res.status(400).json({ error: 'Brak tekstu' }); return }
+  try {
+    const resp = await ollama.chat({
+      model: FALLBACK_MODEL || DEFAULT_MODEL,
+      messages: [
+        { role: 'system', content: 'Wygeneruj bardzo krótki tytuł (2-5 słów) dla poniższego pytania. Odpowiedz wyłącznie tytułem, bez cudzysłowów, kropek i nagłówków.' },
+        { role: 'user', content: q.slice(0, 400) },
+      ],
+      stream: false,
+      options: { temperature: 0.3, num_predict: 20 },
+    })
+    res.json({ title: (resp.message.content || '').trim().slice(0, 60) })
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err)
+    log(`✗ Title: ${msg}`)
+    res.status(503).json({ error: msg })
   }
 })
 

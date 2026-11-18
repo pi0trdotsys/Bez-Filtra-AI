@@ -5,7 +5,7 @@ import { Markdown } from './Markdown'
 import { ThinkingBars } from './ThinkingIndicator'
 import {
   UserIcon, SparkGlyph, ChartIcon, BoltGlyph, ClockIcon, BatteryIcon, DropletIcon,
-  CopyIcon, RefreshIcon, EditIcon, CheckIcon,
+  CopyIcon, RefreshIcon, EditIcon, CheckIcon, ModelIcon,
 } from './Icons'
 
 interface MessageBubbleProps {
@@ -13,6 +13,8 @@ interface MessageBubbleProps {
   isStreaming?: boolean
   isLast?: boolean
   onRegenerate?: () => void
+  onRegenerateWithModel?: (model: string) => void
+  models?: { name: string; label: string }[]
   onEdit?: (id: string, content: string) => void
 }
 
@@ -49,7 +51,7 @@ function ThinkingBlock({ text, live }: { text: string; live: boolean }) {
   )
 }
 
-export function MessageBubble({ message, isStreaming, isLast, onRegenerate, onEdit }: MessageBubbleProps) {
+export function MessageBubble({ message, isStreaming, isLast, onRegenerate, onRegenerateWithModel, models, onEdit }: MessageBubbleProps) {
   const isUser = message.role === 'user'
   const [copied, setCopied] = useState(false)
   const [editing, setEditing] = useState(false)
@@ -197,6 +199,16 @@ export function MessageBubble({ message, isStreaming, isLast, onRegenerate, onEd
             )}
             {!isUser && isLast && onRegenerate && (
               <IconButton onClick={onRegenerate} label="Wygeneruj odpowiedź od nowa"><RefreshIcon size={11} /> ponów</IconButton>
+            )}
+            {!isUser && isLast && onRegenerateWithModel && models && models.length > 1 && (
+              <details className="regen-models">
+                <summary title="Regeneruj innym modelem"><ModelIcon name="bot" size={11} /></summary>
+                <div className="regen-list">
+                  {models.map(m => (
+                    <button key={m.name} type="button" onClick={() => onRegenerateWithModel(m.name)}>{m.label}</button>
+                  ))}
+                </div>
+              </details>
             )}
             {isUser && onEdit && (
               <IconButton onClick={startEdit} label="Edytuj i wyślij ponownie"><EditIcon size={11} /> edytuj</IconButton>

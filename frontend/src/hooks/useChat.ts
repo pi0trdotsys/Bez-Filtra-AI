@@ -74,7 +74,7 @@ export function useChat(initialMessages: Message[] = [], model?: string, systemP
   const stop = useCallback(() => abortRef.current?.abort(), [])
 
   // Rdzeń: generuje odpowiedź asystenta dla podanej listy wiadomości (kończącej się pytaniem użytkownika)
-  const runCompletion = useCallback(async (baseMessages: Message[]) => {
+  const runCompletion = useCallback(async (baseMessages: Message[], modelOverride?: string) => {
     const assistantMessage: Message = { id: genId(), role: 'assistant', content: '', createdAt: Date.now() }
     setMessages([...baseMessages, assistantMessage])
     setIsStreaming(true)
@@ -89,7 +89,7 @@ export function useChat(initialMessages: Message[] = [], model?: string, systemP
     abortRef.current = controller
 
     try {
-      for await (const event of streamChat(baseMessages, { model, system: systemPrompt, signal: controller.signal })) {
+      for await (const event of streamChat(baseMessages, { model: modelOverride ?? model, system: systemPrompt, signal: controller.signal })) {
         if ('content' in event) {
           setMessages(prev =>
             prev.map(m => (m.id === assistantMessage.id ? { ...m, content: m.content + event.content } : m))
@@ -144,6 +144,15 @@ export function useChat(initialMessages: Message[] = [], model?: string, systemP
     await runCompletion(base)
   }, [messages, isStreaming, runCompletion])
 
+  // Ponów ostatnią odpowiedź konkretnym modelem (porównywanie modeli)
+  const regenerateWithModel = useCallback(async (m: string) => {
+    if (isStreaming) return
+    let base = messages
+    if (base.length && base[base.length - 1].role === 'assistant') base = base.slice(0, -1)
+    if (!base.length || base[base.length - 1].role !== 'user') return
+    await runCompletion(base, m)
+  }, [messages, isStreaming, runCompletion])
+
   // Edytuj wiadomość użytkownika i wygeneruj odpowiedź od nowa (ucina wszystko po niej)
   const editMessage = useCallback(async (id: string, content: string) => {
     if (isStreaming) return
@@ -157,7 +166,7 @@ export function useChat(initialMessages: Message[] = [], model?: string, systemP
 
   return {
     messages, setMessages, isStreaming, error,
-    sendMessage, regenerate, editMessage, stop, clearMessages,
+    sendMessage, regenerate, regenerateWithModel, editMessage, stop, clearMessages,
     elapsedMs, estimateMs, sessionTokens, sessionEnergyKWh, sessionWaterL,
   }
 }

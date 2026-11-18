@@ -102,7 +102,7 @@ export function ChatWindow({ onLogout }: { onLogout: () => void }) {
   const activeConv = conversations.find(c => c.id === activeId)
   const {
     messages, setMessages, isStreaming, error, sendMessage, regenerate,
-    editMessage, stop, clearMessages, elapsedMs, estimateMs,
+    regenerateWithModel, editMessage, stop, clearMessages, elapsedMs, estimateMs,
     sessionTokens, sessionEnergyKWh, sessionWaterL,
   } = useChat(initialMessages, selectedModel, activeConv?.systemPrompt, activeId)
 
@@ -217,6 +217,38 @@ export function ChatWindow({ onLogout }: { onLogout: () => void }) {
   const handleExport = () => {
     if (activeConv) downloadConversation(activeConv)
   }
+
+  const modelList = models.map(m => ({ name: m.name, label: describeModel(m.name).label }))
+
+  const handleRegenerateWithModel = (m: string) => {
+    handleSelectModel(m)
+    regenerateWithModel(m)
+  }
+
+  // Tytuł generowany modelem w tle (po pierwszym pytaniu).
+  const titleRequestedRef = useRef<Set<string>>(new Set())
+  useEffect(() => {
+    const conv = conversations.find(c => c.id === activeId)
+    if (!conv) return
+    const firstUser = conv.messages.find(m => m.role === 'user')?.content?.trim()
+    if (!firstUser || titleRequestedRef.current.has(conv.id)) return
+    titleRequestedRef.current.add(conv.id)
+    const fallback = conv.title
+    ;(async () => {
+      try {
+        const res = await fetch('/api/title', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('token')}` },
+          body: JSON.stringify({ text: firstUser }),
+        })
+        if (!res.ok) return
+        const data = (await res.json()) as { title?: string }
+        if (data.title) {
+          setConversations(prev => prev.map(c => (c.id === activeId && c.title === fallback ? { ...c, title: data.title! } : c)))
+        }
+      } catch { /* zostaje tytuł fallback */ }
+    })()
+  }, [conversations, activeId])
 
   const [showPersona, setShowPersona] = useState(false)
   const [showAdmin, setShowAdmin] = useState(false)
@@ -602,6 +634,8 @@ export function ChatWindow({ onLogout }: { onLogout: () => void }) {
                 isStreaming={isStreaming && i === messages.length - 1 && msg.role === 'assistant'}
                 isLast={i === messages.length - 1}
                 onRegenerate={regenerate}
+                onRegenerateWithModel={handleRegenerateWithModel}
+                models={modelList}
                 onEdit={editMessage}
               />
             ))}
