@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
+import { SlidersIcon } from './Icons'
 
 interface PersonaPanelProps {
   value: string
@@ -8,10 +9,10 @@ interface PersonaPanelProps {
 }
 
 const PRESETS = [
-  { label: '👨‍💻 Programista', text: 'Jesteś doświadczonym programistą. Odpowiadaj konkretnie, z przykładami kodu i krótkim wyjaśnieniem. Wskazuj pułapki i lepsze rozwiązania.' },
-  { label: '✍️ Pisarz', text: 'Jesteś kreatywnym pisarzem. Pisz barwnym, obrazowym językiem, dbaj o styl i rytm zdań.' },
-  { label: '🎓 Nauczyciel', text: 'Jesteś cierpliwym nauczycielem. Tłumacz od podstaw, prostymi słowami, krok po kroku, z przykładami z życia.' },
-  { label: '🧪 Ekspert', text: 'Jesteś wnikliwym ekspertem. Odpowiadaj szczegółowo i merytorycznie, podawaj niuanse i kontekst.' },
+  { label: 'Programista', text: 'Jesteś doświadczonym programistą. Odpowiadaj konkretnie, z przykładami kodu i krótkim wyjaśnieniem. Wskazuj pułapki i lepsze rozwiązania.' },
+  { label: 'Pisarz', text: 'Jesteś kreatywnym pisarzem. Pisz barwnym, obrazowym językiem, dbaj o styl i rytm zdań.' },
+  { label: 'Nauczyciel', text: 'Jesteś cierpliwym nauczycielem. Tłumacz od podstaw, prostymi słowami, krok po kroku, z przykładami z życia.' },
+  { label: 'Ekspert', text: 'Jesteś wnikliwym ekspertem. Odpowiadaj szczegółowo i merytorycznie, podawaj niuanse i kontekst.' },
 ]
 
 export function PersonaPanel({ value, onSave, onClose }: PersonaPanelProps) {
@@ -38,7 +39,7 @@ export function PersonaPanel({ value, onSave, onClose }: PersonaPanelProps) {
         }}
       >
         <div className="flex items-center gap-2 mb-1">
-          <span style={{ fontSize: 18 }}>🎭</span>
+          <span style={{ color: 'var(--accent)', display: 'inline-flex' }}><SlidersIcon size={18} /></span>
           <h2 className="text-base font-semibold" style={{ color: 'var(--ink)' }}>Persona rozmowy</h2>
         </div>
         <p className="text-xs mb-3" style={{ color: 'var(--ink-soft)' }}>

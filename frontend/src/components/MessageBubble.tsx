@@ -1,8 +1,12 @@
-import { useState } from 'react'
+import { useState, type ReactNode } from 'react'
 import { motion } from 'framer-motion'
 import type { Message } from '@/types/chat'
 import { Markdown } from './Markdown'
 import { ThinkingBars } from './ThinkingIndicator'
+import {
+  UserIcon, SparkGlyph, ChartIcon, BoltGlyph, ClockIcon, BatteryIcon, DropletIcon,
+  CopyIcon, RefreshIcon, EditIcon, CheckIcon,
+} from './Icons'
 
 interface MessageBubbleProps {
   message: Message
@@ -67,9 +71,10 @@ export function MessageBubble({ message, isStreaming, isLast, onRegenerate, onEd
           width: 28, height: 28,
           background: isUser ? 'var(--surface-2)' : 'var(--surface)',
           border: isUser ? '1px solid var(--border-strong)' : '1px solid rgba(var(--accent-rgb),0.5)',
+          color: isUser ? 'var(--ink-soft)' : 'rgb(var(--accent-rgb))',
         }}
       >
-        {isUser ? '👤' : '🐬'}
+        {isUser ? <UserIcon size={15} /> : <SparkGlyph size={14} />}
       </div>
 
       <div className={`flex flex-col gap-1 max-w-[85%] sm:max-w-[78%] ${isUser ? 'items-end' : 'items-start'}`}>
@@ -79,7 +84,7 @@ export function MessageBubble({ message, isStreaming, isLast, onRegenerate, onEd
             borderRadius: isUser ? '12px 12px 3px 12px' : '12px 12px 12px 3px',
             background: 'var(--surface)',
             border: isUser ? '1px solid var(--border-strong)' : '1px solid var(--border)',
-            color: 'rgba(28,24,20,0.9)',
+            color: 'rgba(var(--ink-rgb),0.9)',
           }}
         >
           {editing ? (
@@ -121,35 +126,35 @@ export function MessageBubble({ message, isStreaming, isLast, onRegenerate, onEd
             <>
               <Markdown content={message.content} />
 
-              {/* Statystyki - pokazują się zarówno po normalnym zakończeniu jak i po przerwaniu */}
+              {/* Statystyki */}
               {message.stats && (() => {
                 const s = message.stats
                 const interrupted = (s as any).interrupted === true
-                const parts: { icon: string; value: string; title: string }[] = [
-                  { icon: '📊', value: `${s.promptTok} → ${s.genTok} tok`, title: 'tokeny wejściowe → wygenerowane' },
-                  { icon: '⚡', value: `${s.tps.toString().replace('.', ',')} tok/s`, title: 'prędkość generowania' },
+                const parts: { icon: ReactNode; value: string; title: string }[] = [
+                  { icon: <ChartIcon size={11} />, value: `${s.promptTok} → ${s.genTok} tok`, title: 'tokeny wejściowe → wygenerowane' },
+                  { icon: <BoltGlyph size={10} />, value: `${s.tps.toString().replace('.', ',')} tok/s`, title: 'prędkość generowania' },
                 ]
                 if (s.responseTimeMs != null)
-                  parts.push({ icon: '⏱️', value: `${(s.responseTimeMs / 1000).toFixed(1)} s`, title: 'czas odpowiedzi' })
+                  parts.push({ icon: <ClockIcon size={11} />, value: `${(s.responseTimeMs / 1000).toFixed(1)} s`, title: 'czas odpowiedzi' })
                 if (s.energyKWh != null)
-                  parts.push({ icon: '🔋', value: `${(s.energyKWh * 1000).toFixed(2)} Wh`, title: 'zużycie energii' })
+                  parts.push({ icon: <BatteryIcon size={11} />, value: `${(s.energyKWh * 1000).toFixed(2)} Wh`, title: 'zużycie energii' })
                 if (s.waterL != null)
-                  parts.push({ icon: '💧', value: `${(s.waterL * 1000).toFixed(1)} ml`, title: 'zużycie wody (chłodzenie)' })
+                  parts.push({ icon: <DropletIcon size={11} />, value: `${(s.waterL * 1000).toFixed(1)} ml`, title: 'zużycie wody (chłodzenie)' })
                 return (
                   <div className="mt-2 pt-1.5 flex flex-wrap gap-x-3 gap-y-1 items-center" style={{ borderTop: '1px solid var(--border)' }}>
                     {interrupted && (
                       <span style={{ fontSize: 10, color: '#C0392B', letterSpacing: '0.04em' }}>
-                        ⏹️ przerwano
+                        przerwano
                       </span>
                     )}
-                    {parts.map(p => (
+                    {parts.map((p, i) => (
                       <span
-                        key={p.icon}
+                        key={i}
                         title={p.title}
                         className="flex items-center gap-1"
                         style={{ fontSize: 10, color: 'var(--ink-faint)', letterSpacing: '0.01em' }}
                       >
-                        <span>{p.icon}</span>
+                        <span style={{ display: 'inline-flex' }}>{p.icon}</span>
                         <span>{p.value}</span>
                       </span>
                     ))}
@@ -168,14 +173,14 @@ export function MessageBubble({ message, isStreaming, isLast, onRegenerate, onEd
             <span style={{ fontSize: 10, color: 'var(--ink-faint)' }}>{fmtTime(message.createdAt)}</span>
             {!isUser && message.content && (
               <IconButton onClick={copy} label={copied ? 'Skopiowano' : 'Kopiuj odpowiedź'}>
-                {copied ? '✓ skopiowano' : '⧉ kopiuj'}
+                {copied ? <><CheckIcon size={11} /> skopiowano</> : <><CopyIcon size={11} /> kopiuj</>}
               </IconButton>
             )}
             {!isUser && isLast && onRegenerate && (
-              <IconButton onClick={onRegenerate} label="Wygeneruj odpowiedź od nowa">↻ ponów</IconButton>
+              <IconButton onClick={onRegenerate} label="Wygeneruj odpowiedź od nowa"><RefreshIcon size={11} /> ponów</IconButton>
             )}
             {isUser && onEdit && (
-              <IconButton onClick={startEdit} label="Edytuj i wyślij ponownie">✎ edytuj</IconButton>
+              <IconButton onClick={startEdit} label="Edytuj i wyślij ponownie"><EditIcon size={11} /> edytuj</IconButton>
             )}
           </div>
         )}

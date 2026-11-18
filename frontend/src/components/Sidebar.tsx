@@ -1,6 +1,7 @@
 import { motion, AnimatePresence } from 'framer-motion'
 import { useMemo, useState } from 'react'
 import { dateGroup, type Conversation } from '@/lib/conversations'
+import { PlusIcon, ChartIcon, LogoutIcon } from './Icons'
 
 interface SidebarProps {
   isOpen: boolean
@@ -81,7 +82,7 @@ export function Sidebar({ isOpen, onClose, conversations, activeId, onSelect, on
             className="w-full flex items-center gap-2 text-xs rounded-lg px-3 py-2 transition-colors"
             style={{background:'var(--surface-2)',border:'1px solid var(--border)',color:'var(--ink-soft)'}}
           >
-            + Nowa rozmowa
+            <PlusIcon size={13} /> Nowa rozmowa
           </button>
         </div>
 
@@ -167,14 +168,14 @@ export function Sidebar({ isOpen, onClose, conversations, activeId, onSelect, on
             className="w-full flex items-center gap-2 text-xs px-3 py-2 rounded-lg transition-colors mb-1.5"
             style={{color:'var(--ink-soft)',border:'1px solid var(--border)'}}
           >
-            📊 Statystyki
+            <ChartIcon size={13} /> Statystyki
           </button>
           <button
             onClick={onLogout}
             className="w-full flex items-center gap-2 text-xs px-3 py-2 rounded-lg transition-colors"
             style={{color:'var(--ink-soft)',border:'1px solid var(--border)'}}
           >
-            ← Wyloguj
+            <LogoutIcon size={13} /> Wyloguj
           </button>
         </div>
       </motion.aside>

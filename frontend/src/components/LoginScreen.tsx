@@ -62,7 +62,7 @@ export function LoginScreen({ onLogin, notice }: LoginScreenProps) {
             className="text-sm text-center mb-4 rounded-lg px-3 py-2"
             style={{ color: '#B7791F', background: '#FBF0D9', border: '1px solid #EFD9A7' }}
           >
-            ⏳ {notice}
+            {notice}
           </motion.p>
         )}
 

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
+import { LockIcon, XIcon } from './Icons'
 import {
   adminLogin, hasAdminSession, clearAdminSession,
   fetchAdminConversations, fetchAdminStats,
@@ -57,7 +58,7 @@ export function AdminPanel({ onClose }: { onClose: () => void }) {
         {!authed ? (
           <form onSubmit={handlePinSubmit} className="p-6 flex flex-col gap-4">
             <div>
-              <p className="text-sm font-semibold" style={{ color: 'var(--ink)' }}>🔒 Panel statystyk</p>
+              <p className="text-sm font-semibold flex items-center gap-1.5" style={{ color: 'var(--ink)' }}><LockIcon size={14} /> Panel statystyk</p>
               <p className="text-xs mt-1" style={{ color: 'var(--ink-soft)' }}>
                 Podaj PIN, żeby zobaczyć wszystkie rozmowy i statystyki.
               </p>
@@ -95,8 +96,8 @@ export function AdminPanel({ onClose }: { onClose: () => void }) {
                 <TabButton active={tab === 'logs'} onClick={() => setTab('logs')}>💬 Rozmowy</TabButton>
               </div>
               <div className="flex items-center gap-4">
-                <button onClick={handleLock} className="text-xs" style={{ color: 'var(--ink-faint)' }}>🔒 Zablokuj</button>
-                <button onClick={onClose} className="text-xs" style={{ color: 'var(--ink-faint)' }}>✕</button>
+                <button onClick={handleLock} className="text-xs flex items-center gap-1" style={{ color: 'var(--ink-faint)' }}><LockIcon size={13} /> Zablokuj</button>
+                <button onClick={onClose} className="text-xs flex items-center gap-1" style={{ color: 'var(--ink-faint)' }}><XIcon size={14} /></button>
               </div>
             </div>
             <div className="flex-1 overflow-y-auto p-5">
@@ -263,9 +264,9 @@ function LogsTab() {
               </button>
               {expanded && (
                 <div className="px-3 py-3" style={{ borderTop: '1px solid var(--border)' }}>
-                  <p style={{ fontSize: 11, color: 'var(--ink-faint)', marginBottom: 4 }}>❓ Pytanie</p>
+                  <p style={{ fontSize: 11, color: 'var(--ink-faint)', marginBottom: 4 }}>Pytanie</p>
                   <p className="whitespace-pre-wrap" style={{ fontSize: 12, color: 'var(--ink)', marginBottom: 10 }}>{r.question}</p>
-                  <p style={{ fontSize: 11, color: 'var(--ink-faint)', marginBottom: 4 }}>💬 Odpowiedź</p>
+                  <p style={{ fontSize: 11, color: 'var(--ink-faint)', marginBottom: 4 }}>Odpowiedź</p>
                   <p className="whitespace-pre-wrap" style={{ fontSize: 12, color: 'var(--ink)' }}>
                     {r.answer || (r.error ? `[BŁĄD: ${r.error}]` : '(brak)')}
                   </p>
@@ -273,7 +274,7 @@ function LogsTab() {
                     <p className="mt-3" style={{ fontSize: 10, color: 'var(--ink-faint)', fontFamily: 'ui-monospace,monospace' }}>
                       {r.promptTok}→{r.genTok} tok · {r.tps} tok/s
                       {r.wallMs != null && ` · ${(r.wallMs / 1000).toFixed(1)}s`}
-                      {r.energyKWh != null && ` · ⚡ ${(r.energyKWh * 1000).toFixed(2)} Wh`}
+                      {r.energyKWh != null && ` · ${(r.energyKWh * 1000).toFixed(2)} Wh`}
                     </p>
                   )}
                 </div>

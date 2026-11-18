@@ -1,14 +1,17 @@
 @import "tailwindcss";
 
 /* ─────────────────────────────────────────────────────────────
-   Bez Filtra · motyw „papier + tusz + cynober"
+   Bez Filtra · motyw „papier + tusz + cynober" (jasny + ciemny)
    -------------------------------------------------------------
    --accent-rgb to akcent *modelu* (nadpisywany z JS po wyborze
    modelu) - używany wyłącznie jako mała kropka/odznaka modelu.
    Brandowy akcent (cynober) jest stały: --accent / --accent-ink.
+   Ciemny motyw włącza atrybut data-theme="dark" na <html>.
    ───────────────────────────────────────────────────────────── */
 :root {
   --accent-rgb: 204,94,35;   /* model: domyślnie ochra (Qwen) */
+  --accent-brand-rgb: 217,64,30;
+  --ink-rgb: 28,24,20;
 
   --bg: #F7F4EF;             /* papier */
   --bg-soft: #EFEAE0;        /* papier przyciemniony */
@@ -22,6 +25,35 @@
   --accent: #D9401E;         /* cynober */
   --accent-ink: #B93316;
   --accent-soft: #FBE4DA;
+
+  --code-bg: #1B1815;        /* ciemny inset kodu */
+  --code-border: #DED6C8;
+  --code-ink: #F2A18C;
+
+  color-scheme: light;
+}
+
+[data-theme="dark"] {
+  --accent-brand-rgb: 232,91,51;
+  --ink-rgb: 242,237,228;
+
+  --bg: #14110E;
+  --bg-soft: #1D1915;
+  --surface: #1E1A16;
+  --surface-2: #27221C;
+  --border: #2E2922;
+  --border-strong: #3D362C;
+  --ink: #F2EDE4;
+  --ink-soft: #B8AE9F;
+  --ink-faint: #7C7366;
+  --accent: #E85B33;
+  --accent-ink: #FF8A5C;
+  --accent-soft: #3A241A;
+
+  --code-bg: #100E0B;
+  --code-border: #2E2922;
+
+  color-scheme: dark;
 }
 
 html, body, #root { height: 100%; }
@@ -31,13 +63,13 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+  transition: background-color 0.25s ease, color 0.25s ease;
 }
 
 /* Serif edytorski dla wordmarku */
 .serif { font-family: ui-serif, Georgia, 'Iowan Old Style', 'Times New Roman', serif; }
 
-/* ── Dotyk: akcje chowane pod :hover nie działają na telefonie ──
-   Na urządzeniach bez kursora pokazujemy je na stałe (przygaszone). */
+/* ── Dotyk: akcje chowane pod :hover nie działają na telefonie ── */
 @media (hover: none) {
   .hover-actions { opacity: 0.7 !important; }
 }
@@ -49,7 +81,7 @@ body {
 .markdown {
   font-size: 0.92rem;
   line-height: 1.65;
-  color: rgba(28,24,20,0.85);
+  color: rgba(var(--ink-rgb),0.85);
 }
 .markdown > *:first-child { margin-top: 0; }
 .markdown > *:last-child { margin-bottom: 0; }
@@ -57,7 +89,7 @@ body {
 .markdown p { margin: 0.6em 0; }
 .markdown ul, .markdown ol { margin: 0.6em 0; padding-left: 1.4em; }
 .markdown li { margin: 0.3em 0; }
-.markdown li::marker { color: rgba(217,64,30,0.65); }
+.markdown li::marker { color: rgba(var(--accent-brand-rgb),0.65); }
 
 .markdown h1, .markdown h2, .markdown h3, .markdown h4 {
   margin: 1em 0 0.45em; font-weight: 700; line-height: 1.25;
@@ -70,16 +102,16 @@ body {
   border-bottom: 1px solid var(--border);
 }
 .markdown h3 { font-size: 1.08em; }
-.markdown h4 { font-size: 1em; color: rgba(28,24,20,0.8); }
+.markdown h4 { font-size: 1em; color: rgba(var(--ink-rgb),0.8); }
 
 .markdown a {
   color: var(--accent); text-decoration: none;
-  border-bottom: 1px solid rgba(217,64,30,0.35);
+  border-bottom: 1px solid rgba(var(--accent-brand-rgb),0.35);
   transition: border-color 0.15s;
 }
-.markdown a:hover { border-bottom-color: rgba(217,64,30,0.9); }
+.markdown a:hover { border-bottom-color: rgba(var(--accent-brand-rgb),0.9); }
 .markdown strong { font-weight: 700; color: var(--ink); }
-.markdown em { color: rgba(28,24,20,0.9); }
+.markdown em { color: rgba(var(--ink-rgb),0.9); }
 .markdown hr { border: none; border-top: 1px solid var(--border); margin: 1em 0; }
 
 .markdown blockquote {
@@ -87,14 +119,14 @@ body {
   border-left: 3px solid var(--accent);
   background: var(--accent-soft);
   border-radius: 0 8px 8px 0;
-  color: rgba(28,24,20,0.75);
+  color: rgba(var(--ink-rgb),0.75);
 }
 .markdown blockquote p { margin: 0.25em 0; }
 
 /* Kod inline */
 .markdown :not(pre) > code {
-  background: rgba(28,24,20,0.06);
-  border: 1px solid rgba(28,24,20,0.12);
+  background: rgba(var(--ink-rgb),0.06);
+  border: 1px solid rgba(var(--ink-rgb),0.12);
   border-radius: 5px;
   padding: 0.12em 0.42em;
   font-size: 0.86em;
@@ -102,13 +134,13 @@ body {
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 }
 
-/* Bloki kodu z paskiem nagłówka (ciemny inset na jasnym tle) */
+/* Bloki kodu z paskiem nagłówka (ciemny inset w obu motywach) */
 .code-block {
   margin: 0.75em 0;
   border-radius: 10px;
   overflow: hidden;
-  border: 1px solid #DED6C8;
-  background: #1B1815;
+  border: 1px solid var(--code-border);
+  background: var(--code-bg);
 }
 .code-block-bar {
   display: flex; align-items: center; justify-content: space-between;
@@ -119,7 +151,7 @@ body {
 .code-lang {
   font-size: 0.7rem; font-weight: 600; letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: #F2A18C;
+  color: var(--code-ink);
   font-family: ui-monospace, monospace;
 }
 .code-copy {
@@ -148,8 +180,8 @@ body {
   display: block; overflow-x: auto;
 }
 .markdown th, .markdown td {
-  border: 1px solid rgba(28,24,20,0.12);
+  border: 1px solid rgba(var(--ink-rgb),0.12);
   padding: 0.4em 0.7em; text-align: left;
 }
-.markdown th { background: rgba(28,24,20,0.04); font-weight: 700; color: var(--ink); }
-.markdown tr:nth-child(even) td { background: rgba(28,24,20,0.02); }
+.markdown th { background: rgba(var(--ink-rgb),0.04); font-weight: 700; color: var(--ink); }
+.markdown tr:nth-child(even) td { background: rgba(var(--ink-rgb),0.02); }

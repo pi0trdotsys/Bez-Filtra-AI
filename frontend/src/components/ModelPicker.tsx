@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { describeModel, type ModelEntry } from '@/lib/models'
+import { ModelIcon } from './Icons'
 import type { Health } from '@/hooks/useHealth'
 
 interface ModelPickerProps {
@@ -127,7 +128,7 @@ export function ModelPicker({ health, models, value, defaultModel, onChange, hin
                   >
                     <div className="flex items-center justify-between gap-2">
                       <span className="flex items-center gap-1.5 text-sm font-medium" style={{color:'var(--ink)'}}>
-                        <span>{meta.emoji}</span>
+                        <ModelIcon name={meta.icon} size={15} color={`rgb(${meta.accentRgb})`} />
                         {meta.label}
                         {active && (
                           <motion.span

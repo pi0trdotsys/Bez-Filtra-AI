@@ -19,11 +19,13 @@ import {
   type Conversation,
 } from '@/lib/conversations'
 import { describeModel } from '@/lib/models'
+import { getStoredTheme, toggleTheme, type Theme } from '@/lib/theme'
+import { ModelIcon, SearchIcon, SlidersIcon, TrashIcon, ChartIcon, BatteryIcon, DropletIcon, SunIcon, MoonIcon, FlameIcon, BombIcon, SkullIcon, BanIcon } from './Icons'
 
 // Zanim /api/models odpowie (albo gdy backend jest niedostępny) - awaryjny model,
 // zgodny z DEFAULT_MODEL w backend/src/index.ts. Realna lista wyboru to zawsze
 // to, co faktycznie pobrane w Ollamie (patrz useModels/`/api/models`).
-const FALLBACK_MODEL = 'huihui_ai/qwen2.5-abliterate:7b'
+const FALLBACK_MODEL = 'huihui_ai/qwen3-abliterated:8b'
 
 const formatTime = (ms: number) => {
   const total = Math.floor(ms / 1000)
@@ -43,33 +45,33 @@ const plTokens = (n: number) => {
 
 // Komunikaty statusu - eskalują z czasem jak u Claude'a
 const THINKING_STEPS: { t: number; msg: string }[] = [
-  { t: 4,   msg: '⚡ Przetwarzam pytanie…' },
-  { t: 10,  msg: '🧠 Analizuję temat…' },
-  { t: 22,  msg: '🔍 Szukam najlepszej odpowiedzi…' },
-  { t: 45,  msg: '⚙️ Składam myśli w całość…' },
-  { t: 80,  msg: '🤔 Zagłębiam się w szczegóły…' },
-  { t: 130, msg: '📝 Finalizuję odpowiedź…' },
-  { t: 200, msg: '🏁 Już prawie gotowe…' },
+  { t: 4,   msg: 'Przetwarzam pytanie…' },
+  { t: 10,  msg: 'Analizuję temat…' },
+  { t: 22,  msg: 'Szukam najlepszej odpowiedzi…' },
+  { t: 45,  msg: 'Składam myśli w całość…' },
+  { t: 80,  msg: 'Zagłębiam się w szczegóły…' },
+  { t: 130, msg: 'Finalizuję odpowiedź…' },
+  { t: 200, msg: 'Już prawie gotowe…' },
 ]
 const WRITING_STEPS: { t: number; msg: string }[] = [
-  { t: 5,   msg: '✍️ Piszę odpowiedź…' },
-  { t: 20,  msg: '📖 Rozwijam myśl…' },
-  { t: 50,  msg: '🎯 Dobieram słowa…' },
-  { t: 100, msg: '🔖 Kończę odpowiedź…' },
+  { t: 5,   msg: 'Piszę odpowiedź…' },
+  { t: 20,  msg: 'Rozwijam myśl…' },
+  { t: 50,  msg: 'Dobieram słowa…' },
+  { t: 100, msg: 'Kończę odpowiedź…' },
 ]
 const thinkingStatus = (elapsedMs: number, writing: boolean) => {
   const s = elapsedMs / 1000
   const steps = writing ? WRITING_STEPS : THINKING_STEPS
   for (const step of steps) if (s < step.t) return step.msg
-  return writing ? '✅ Zaraz skończę…' : '🌀 Głęboka analiza w toku…'
+  return writing ? 'Zaraz skończę…' : 'Głęboka analiza w toku…'
 }
 
 const EXAMPLE_PROMPTS = [
-  { icon: '🔥', text: 'Powiedz bez politycznej poprawności, co naprawdę sądzisz o mediach społecznościowych' },
-  { icon: '🧨', text: 'Podaj najmocniejsze argumenty przeciwko powszechnej opinii w wybranym kontrowersyjnym temacie' },
-  { icon: '💀', text: 'Napisz mroczne opowiadanie z brutalnym zakończeniem' },
-  { icon: '🎭', text: 'Wciel się w cynicznego, bezkompromisowego rozmówcę i przywitaj się' },
-  { icon: '🚫', text: 'Wyjaśnij jakiś temat tabu, który większość AI zwykle omija' },
+  { icon: <FlameIcon size={16} />, text: 'Powiedz bez politycznej poprawności, co naprawdę sądzisz o mediach społecznościowych' },
+  { icon: <BombIcon size={16} />, text: 'Podaj najmocniejsze argumenty przeciwko powszechnej opinii w wybranym kontrowersyjnym temacie' },
+  { icon: <SkullIcon size={16} />, text: 'Napisz mroczne opowiadanie z brutalnym zakończeniem' },
+  { icon: <SlidersIcon size={16} />, text: 'Wciel się w cynicznego, bezkompromisowego rozmówcę i przywitaj się' },
+  { icon: <BanIcon size={16} />, text: 'Wyjaśnij jakiś temat tabu, który większość AI zwykle omija' },
 ]
 
 export function ChatWindow({ onLogout }: { onLogout: () => void }) {
@@ -123,6 +125,9 @@ export function ChatWindow({ onLogout }: { onLogout: () => void }) {
   const [paletteOpen, setPaletteOpen] = useState(false)
   const [modelPickerOpen, setModelPickerOpen] = useState(false)
   const [atBottom, setAtBottom] = useState(true)
+  const [theme, setTheme] = useState<Theme>(getStoredTheme)
+
+  const handleToggleTheme = () => setTheme(toggleTheme())
 
   const toggleSidebar = () => {
     setSidebarCollapsed(prev => {
@@ -347,7 +352,7 @@ export function ChatWindow({ onLogout }: { onLogout: () => void }) {
               className="hidden md:flex items-center gap-1.5 rounded-lg px-2.5 h-[30px]"
               style={{color:'var(--ink-soft)',border:'1px solid var(--border)',fontSize:11}}
             >
-              🔍 <span>Szukaj</span><kbd style={{fontSize:10,opacity:0.6}}>⌘K</kbd>
+              <SearchIcon size={13} /> <span>Szukaj</span><kbd style={{fontSize:10,opacity:0.6}}>⌘K</kbd>
             </button>
           </div>
 
@@ -373,7 +378,7 @@ export function ChatWindow({ onLogout }: { onLogout: () => void }) {
                 transition={{ duration: 1.2, repeat: health.status === 'checking' ? Infinity : 0 }}
                 style={{display:'inline-block',width:7,height:7,borderRadius:'50%',background:statusColor,flexShrink:0}}
               />
-              <span style={{fontWeight:500,whiteSpace:'nowrap'}}>{describeModel(selectedModel).emoji} {describeModel(selectedModel).label}</span>
+              <span style={{fontWeight:500,whiteSpace:'nowrap',display:'inline-flex',alignItems:'center',gap:6}}><ModelIcon name={describeModel(selectedModel).icon} size={16} color={`rgb(${describeModel(selectedModel).accentRgb})`} /> {describeModel(selectedModel).label}</span>
               <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{opacity:0.5,flexShrink:0}}>
                 <polyline points="6 9 12 15 18 9"/>
               </svg>
@@ -410,7 +415,7 @@ export function ChatWindow({ onLogout }: { onLogout: () => void }) {
                           className="w-full flex items-start gap-3 px-4 py-3 text-left"
                           style={{background: active ? 'var(--accent-soft)' : 'transparent', borderBottom:'1px solid var(--border)'}}
                         >
-                          <span style={{fontSize:20,lineHeight:1,marginTop:2}}>{m.emoji}</span>
+                          <span style={{marginTop:3,display:'inline-flex'}}><ModelIcon name={m.icon} size={20} color={`rgb(${m.accentRgb})`} /></span>
                           <span className="flex-1 min-w-0">
                             <span className="flex items-center gap-2">
                               <span style={{fontSize:13,fontWeight:600,color:'var(--ink)'}}>{m.label}</span>
@@ -428,15 +433,25 @@ export function ChatWindow({ onLogout }: { onLogout: () => void }) {
           </div>
 
           <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={handleToggleTheme}
+              className="flex items-center justify-center rounded-lg"
+              style={{ width: 30, height: 30, color: 'var(--ink-soft)', border: '1px solid var(--border)' }}
+              title={theme === 'dark' ? 'Przełącz na jasny motyw' : 'Przełącz na ciemny motyw'}
+              aria-label="Przełącz motyw"
+            >
+              {theme === 'dark' ? <SunIcon size={15} /> : <MoonIcon size={15} />}
+            </button>
             {sessionTokens > 0 && (
               <span
                 className="hidden sm:flex items-center gap-2 text-xs"
                 style={{color:'var(--ink-faint)',fontFamily:'ui-monospace,monospace'}}
                 title={`Sesja: ${formatTokens(sessionTokens)} tok · ${(sessionEnergyKWh*1000).toFixed(1)} Wh · ${(sessionWaterL*1000).toFixed(0)} ml`}
               >
-                <span>📊 {formatTokens(sessionTokens)} tok</span>
-                <span>🔋 {(sessionEnergyKWh*1000).toFixed(1)} Wh</span>
-                <span>💧 {(sessionWaterL*1000).toFixed(0)} ml</span>
+                <span style={{display:'inline-flex',alignItems:'center',gap:4}}><ChartIcon size={12} /> {formatTokens(sessionTokens)} tok</span>
+                <span style={{display:'inline-flex',alignItems:'center',gap:4}}><BatteryIcon size={12} /> {(sessionEnergyKWh*1000).toFixed(1)} Wh</span>
+                <span style={{display:'inline-flex',alignItems:'center',gap:4}}><DropletIcon size={12} /> {(sessionWaterL*1000).toFixed(0)} ml</span>
               </span>
             )}
             {health.gpuPercent !== null && (
@@ -456,7 +471,7 @@ export function ChatWindow({ onLogout }: { onLogout: () => void }) {
                 className="hidden md:flex items-center gap-1.5 text-xs rounded-full px-2.5 py-1"
                 style={{background:'#FBF0D9',border:'1px solid #EFD9A7',color:'#B7791F'}}
               >
-                ⏳ Ładowanie modelu…
+                Ładowanie modelu…
               </motion.span>
             )}
             <button
@@ -465,10 +480,10 @@ export function ChatWindow({ onLogout }: { onLogout: () => void }) {
               style={{color: activeConv?.systemPrompt ? 'var(--accent)' : 'var(--ink-faint)'}}
               title="Ustaw personę"
             >
-              🎭 Persona{activeConv?.systemPrompt ? ' •' : ''}
+              <SlidersIcon size={13} /> Persona{activeConv?.systemPrompt ? ' •' : ''}
             </button>
-            <button onClick={clearMessages} className="text-xs" style={{color:'var(--ink-faint)'}}>
-              🗑️ Wyczyść
+            <button onClick={clearMessages} className="text-xs flex items-center gap-1" style={{color:'var(--ink-faint)'}}>
+              <TrashIcon size={13} /> Wyczyść
             </button>
           </div>
         </div>
@@ -615,7 +630,7 @@ export function ChatWindow({ onLogout }: { onLogout: () => void }) {
 
           {error && (
             <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-sm text-center" style={{ color: '#C0392B' }}>
-              ⚠️ {error}
+              {error}
             </motion.p>
           )}
           <div ref={bottomRef} />
@@ -690,7 +705,7 @@ export function ChatWindow({ onLogout }: { onLogout: () => void }) {
             )}
           </div>
           <p className="text-center mt-1.5" style={{fontSize:10,color:'var(--ink-faint)'}}>
-            {isStreaming ? '⏹️ Esc = zatrzymaj generowanie' : '↑ Enter = wyślij · Shift+Enter = nowa linia'}
+            {isStreaming ? 'Esc = zatrzymaj generowanie' : 'Enter = wyślij · Shift+Enter = nowa linia'}
           </p>
         </div>
       </div>

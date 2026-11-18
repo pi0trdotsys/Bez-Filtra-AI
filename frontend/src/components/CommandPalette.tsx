@@ -1,7 +1,8 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { motion } from 'framer-motion'
 import { describeModel, type ModelEntry } from '@/lib/models'
 import type { Conversation } from '@/lib/conversations'
+import { SearchIcon, SlidersIcon, PlusIcon, ChatIcon, ModelIcon } from './Icons'
 
 interface CommandPaletteProps {
   onClose: () => void
@@ -17,7 +18,7 @@ interface CommandPaletteProps {
 
 interface Item {
   key: string
-  icon: string
+  icon: ReactNode
   label: string
   sub?: string
   run: () => void
@@ -40,8 +41,8 @@ export function CommandPalette({
 
     // Akcje
     const actions: Item[] = [
-      { key: 'new', icon: '＋', label: 'Nowa rozmowa', run: onNewChat },
-      { key: 'persona', icon: '🎭', label: 'Ustaw personę rozmowy', run: onOpenPersona },
+      { key: 'new', icon: <PlusIcon size={15} />, label: 'Nowa rozmowa', run: onNewChat },
+      { key: 'persona', icon: <SlidersIcon size={15} />, label: 'Ustaw personę rozmowy', run: onOpenPersona },
     ]
     out.push(...actions.filter(a => !q || match(a.label)))
 
@@ -51,7 +52,7 @@ export function CommandPalette({
       if (q && !match(meta.label) && !match(m.name)) continue
       out.push({
         key: 'model:' + m.name,
-        icon: meta.emoji,
+        icon: <ModelIcon name={meta.icon} size={15} color={`rgb(${meta.accentRgb})`} />,
         label: `Model: ${meta.label}`,
         sub: m.name === current ? 'aktywny' : meta.tags.join(' · '),
         run: () => onSelectModel(m.name),
@@ -68,7 +69,7 @@ export function CommandPalette({
       }
       out.push({
         key: 'conv:' + c.id,
-        icon: '💬',
+        icon: <ChatIcon size={15} />,
         label: c.title,
         sub: `${c.messages.length} wiadomości`,
         run: () => onSelectConversation(c.id),
@@ -118,7 +119,7 @@ export function CommandPalette({
         }}
       >
         <div className="flex items-center gap-2 px-4 py-3" style={{ borderBottom: '1px solid var(--border)' }}>
-          <span style={{ color: 'var(--ink-faint)' }}>🔍</span>
+          <span style={{ color: 'var(--ink-faint)', display: 'inline-flex' }}><SearchIcon size={15} /></span>
           <input
             value={query}
             autoFocus
@@ -144,7 +145,7 @@ export function CommandPalette({
               className="w-full flex items-center gap-2.5 text-left rounded-xl px-3 py-2"
               style={{ background: i === sel ? 'var(--accent-soft)' : 'transparent' }}
             >
-              <span style={{ fontSize: 15, width: 20, textAlign: 'center' }}>{it.icon}</span>
+              <span style={{ width: 20, display: 'flex', justifyContent: 'center', flexShrink: 0 }}>{it.icon}</span>
               <span className="flex-1 min-w-0">
                 <span className="block text-sm truncate" style={{ color: 'var(--ink)' }}>{it.label}</span>
                 {it.sub && <span className="block text-xs truncate" style={{ color: 'var(--ink-faint)' }}>{it.sub}</span>}
