@@ -16,11 +16,12 @@ import {
   saveConversations,
   emptyConversation,
   deriveTitle,
+  downloadConversation,
   type Conversation,
 } from '@/lib/conversations'
 import { describeModel } from '@/lib/models'
 import { getStoredTheme, toggleTheme, type Theme } from '@/lib/theme'
-import { ModelIcon, SearchIcon, SlidersIcon, TrashIcon, ChartIcon, BatteryIcon, DropletIcon, SunIcon, MoonIcon, FlameIcon, BombIcon, SkullIcon, BanIcon } from './Icons'
+import { ModelIcon, SearchIcon, SlidersIcon, TrashIcon, ChartIcon, BatteryIcon, DropletIcon, SunIcon, MoonIcon, AutoIcon, ExportIcon, FlameIcon, BombIcon, SkullIcon, BanIcon } from './Icons'
 
 // Zanim /api/models odpowie (albo gdy backend jest niedostępny) - awaryjny model,
 // zgodny z DEFAULT_MODEL w backend/src/index.ts. Realna lista wyboru to zawsze
@@ -84,7 +85,7 @@ export function ChatWindow({ onLogout }: { onLogout: () => void }) {
   const effectiveDefault = defaultModel || FALLBACK_MODEL
 
   const [selectedModel, setSelectedModel] = useState(
-    () => localStorage.getItem('ai-chat-model') || FALLBACK_MODEL
+    () => boot.conversations.find(c => c.id === boot.activeId)?.model || localStorage.getItem('ai-chat-model') || FALLBACK_MODEL
   )
 
   // Gdy dojedzie realna lista pobranych modeli: jeśli zapisany wybór już nie
@@ -108,6 +109,7 @@ export function ChatWindow({ onLogout }: { onLogout: () => void }) {
   const handleSelectModel = (model: string) => {
     setSelectedModel(model)
     localStorage.setItem('ai-chat-model', model)
+    setConversations(prev => prev.map(c => (c.id === activeId ? { ...c, model } : c)))
   }
 
   // Subtelny akcent koloru zależny od wybranego modelu (fiolet=Qwen, róż=Dolphin,
@@ -200,11 +202,20 @@ export function ChatWindow({ onLogout }: { onLogout: () => void }) {
     if (!conv) return
     setActiveId(id)
     setMessages(conv.messages)
+    setSelectedModel(conv.model || localStorage.getItem('ai-chat-model') || FALLBACK_MODEL)
     setSidebarOpen(false)
   }
 
   const handleRename = (id: string, title: string) => {
     setConversations(prev => prev.map(c => (c.id === id ? { ...c, title } : c)))
+  }
+
+  const handleTogglePin = (id: string) => {
+    setConversations(prev => prev.map(c => (c.id === id ? { ...c, pinned: !c.pinned } : c)))
+  }
+
+  const handleExport = () => {
+    if (activeConv) downloadConversation(activeConv)
   }
 
   const [showPersona, setShowPersona] = useState(false)
@@ -214,7 +225,7 @@ export function ChatWindow({ onLogout }: { onLogout: () => void }) {
   }
 
   const handleNew = () => {
-    const conv = emptyConversation()
+    const conv = { ...emptyConversation(), model: selectedModel }
     setConversations(prev => [conv, ...prev])
     setActiveId(conv.id)
     setMessages([])
@@ -301,6 +312,7 @@ export function ChatWindow({ onLogout }: { onLogout: () => void }) {
           onNew={handleNew}
           onDelete={handleDelete}
           onRename={handleRename}
+          onTogglePin={handleTogglePin}
           onLogout={onLogout}
           onOpenAdmin={() => setShowAdmin(true)}
         />
@@ -316,6 +328,7 @@ export function ChatWindow({ onLogout }: { onLogout: () => void }) {
           onNew={handleNew}
           onDelete={handleDelete}
           onRename={handleRename}
+          onTogglePin={handleTogglePin}
           onLogout={onLogout}
           onOpenAdmin={() => setShowAdmin(true)}
         />
@@ -438,10 +451,10 @@ export function ChatWindow({ onLogout }: { onLogout: () => void }) {
               onClick={handleToggleTheme}
               className="flex items-center justify-center rounded-lg"
               style={{ width: 30, height: 30, color: 'var(--ink-soft)', border: '1px solid var(--border)' }}
-              title={theme === 'dark' ? 'Przełącz na jasny motyw' : 'Przełącz na ciemny motyw'}
+              title={theme === 'light' ? 'Motyw: jasny (kliknij: ciemny)' : theme === 'dark' ? 'Motyw: ciemny (kliknij: auto)' : 'Motyw: auto (kliknij: jasny)'}
               aria-label="Przełącz motyw"
             >
-              {theme === 'dark' ? <SunIcon size={15} /> : <MoonIcon size={15} />}
+              {theme === 'light' ? <MoonIcon size={15} /> : theme === 'dark' ? <AutoIcon size={15} /> : <SunIcon size={15} />}
             </button>
             {sessionTokens > 0 && (
               <span
@@ -474,6 +487,14 @@ export function ChatWindow({ onLogout }: { onLogout: () => void }) {
                 Ładowanie modelu…
               </motion.span>
             )}
+            <button
+              onClick={handleExport}
+              className="text-xs flex items-center gap-1"
+              style={{color:'var(--ink-faint)'}}
+              title="Eksportuj rozmowę do Markdown"
+            >
+              <ExportIcon size={13} /> Eksport
+            </button>
             <button
               onClick={() => setShowPersona(true)}
               className="text-xs flex items-center gap-1"

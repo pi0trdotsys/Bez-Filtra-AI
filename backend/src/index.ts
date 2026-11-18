@@ -15,6 +15,7 @@ const app = express()
 app.set('trust proxy', true)
 const ollama = new Ollama({ host: process.env.OLLAMA_URL || 'http://localhost:11434' })
 const DEFAULT_MODEL = process.env.DEFAULT_MODEL || 'huihui_ai/qwen3-abliterated:8b'
+const KEEP_ALIVE = process.env.OLLAMA_KEEP_ALIVE || '10m'
 
 // Opcje generowania per model - balans między jakością a szybkością
 function modelOptions(model: string): Record<string, unknown> {
@@ -272,10 +273,15 @@ app.post('/api/chat', requireAuth, async (req, res) => {
     }
   })
   try {
-    const stream = await ollama.chat({ model, messages: messagesWithSystem, stream: true, options: modelOptions(model) })
+    const stream = await ollama.chat({ model, messages: messagesWithSystem, stream: true, options: modelOptions(model), keep_alive: KEEP_ALIVE })
     abortStream = () => stream.abort()
     for await (const chunk of stream) {
       const content = chunk.message.content
+      const thinking = (chunk.message as { thinking?: string }).thinking
+      if (thinking) {
+        firstTokenSeen = true
+        if (!res.writableEnded) res.write(`data: ${JSON.stringify({ thinking })}` + '\n\n')
+      }
       if (content) {
         firstTokenSeen = true
         answer += content

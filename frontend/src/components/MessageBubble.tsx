@@ -36,6 +36,19 @@ function IconButton({ onClick, label, children }: { onClick: () => void; label: 
   )
 }
 
+function ThinkingBlock({ text, live }: { text: string; live: boolean }) {
+  const [open, setOpen] = useState(false)
+  const show = live || open
+  return (
+    <div className="thinking">
+      <button type="button" className="thinking-toggle" onClick={() => setOpen(o => !o)}>
+        <span className="thinking-caret">{show ? '▾' : '▸'}</span> rozumowanie
+      </button>
+      {show && <div className="thinking-body">{text}</div>}
+    </div>
+  )
+}
+
 export function MessageBubble({ message, isStreaming, isLast, onRegenerate, onEdit }: MessageBubbleProps) {
   const isUser = message.role === 'user'
   const [copied, setCopied] = useState(false)
@@ -64,7 +77,6 @@ export function MessageBubble({ message, isStreaming, isLast, onRegenerate, onEd
       transition={{ duration: 0.2, ease: 'easeOut' }}
       className={`group flex gap-2 items-end ${isUser ? 'flex-row-reverse' : 'flex-row'}`}
     >
-      {/* Avatar */}
       <div
         className="flex-shrink-0 flex items-center justify-center rounded-full text-base"
         style={{
@@ -115,15 +127,22 @@ export function MessageBubble({ message, isStreaming, isLast, onRegenerate, onEd
               </div>
             </div>
           ) : isStreaming && !message.content ? (
-            <span className="flex items-center py-0.5">
-              <ThinkingBars />
-            </span>
+            <>
+              {message.thinking && <ThinkingBlock text={message.thinking} live={!!isStreaming} />}
+              <span className="flex items-center py-0.5">
+                <ThinkingBars />
+              </span>
+            </>
           ) : isUser ? (
             <p className="whitespace-pre-wrap break-words">{message.content}</p>
           ) : isStreaming ? (
-            <Markdown content={message.content} />
+            <>
+              {message.thinking && <ThinkingBlock text={message.thinking} live={!!isStreaming} />}
+              <Markdown content={message.content} />
+            </>
           ) : (
             <>
+              {message.thinking && <ThinkingBlock text={message.thinking} live={!!isStreaming} />}
               <Markdown content={message.content} />
 
               {/* Statystyki */}

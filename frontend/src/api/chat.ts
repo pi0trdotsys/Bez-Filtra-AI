@@ -53,9 +53,10 @@ export async function* streamChat(messages: Message[], opts: { model?: string; s
       const data = line.slice(6)
       if (data === '[DONE]') return
       try {
-        const parsed = JSON.parse(data) as { content?: string; error?: string; stats?: MessageStats }
+        const parsed = JSON.parse(data) as { content?: string; thinking?: string; error?: string; stats?: MessageStats }
         if (parsed.error) throw new Error(parsed.error)
         if (parsed.content) yield { content: parsed.content }
+        if (parsed.thinking) yield { thinking: parsed.thinking }
         if (parsed.stats) yield { stats: parsed.stats }
       } catch {
         // pomiń niepoprawne linie

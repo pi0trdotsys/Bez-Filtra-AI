@@ -13,6 +13,7 @@ export interface Message {
   content: string
   createdAt: number
   stats?: MessageStats
+  thinking?: string
 }
 
 export interface TokenResponse {
@@ -20,4 +21,4 @@ export interface TokenResponse {
 }
 
 // Zdarzenia ze strumienia SSE
-export type ChatEvent = { content: string } | { stats: MessageStats }
+export type ChatEvent = { content: string } | { thinking: string } | { stats: MessageStats }

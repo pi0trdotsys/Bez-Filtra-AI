@@ -94,6 +94,10 @@ export function useChat(initialMessages: Message[] = [], model?: string, systemP
           setMessages(prev =>
             prev.map(m => (m.id === assistantMessage.id ? { ...m, content: m.content + event.content } : m))
           )
+        } else if ('thinking' in event) {
+          setMessages(prev =>
+            prev.map(m => (m.id === assistantMessage.id ? { ...m, thinking: (m.thinking ?? '') + event.thinking } : m))
+          )
         } else if ('stats' in event) {
           setMessages(prev => prev.map(m => (m.id === assistantMessage.id ? { ...m, stats: event.stats } : m)))
           setSessionTokens(prev => prev + event.stats.promptTok + event.stats.genTok)

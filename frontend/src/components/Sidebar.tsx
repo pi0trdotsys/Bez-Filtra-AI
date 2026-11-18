@@ -1,7 +1,7 @@
 import { motion, AnimatePresence } from 'framer-motion'
 import { useMemo, useState } from 'react'
 import { dateGroup, type Conversation } from '@/lib/conversations'
-import { PlusIcon, ChartIcon, LogoutIcon } from './Icons'
+import { PlusIcon, ChartIcon, LogoutIcon, PinIcon } from './Icons'
 
 interface SidebarProps {
   isOpen: boolean
@@ -12,11 +12,12 @@ interface SidebarProps {
   onNew: () => void
   onDelete: (id: string) => void
   onRename: (id: string, title: string) => void
+  onTogglePin: (id: string) => void
   onLogout: () => void
   onOpenAdmin: () => void
 }
 
-export function Sidebar({ isOpen, onClose, conversations, activeId, onSelect, onNew, onDelete, onRename, onLogout, onOpenAdmin }: SidebarProps) {
+export function Sidebar({ isOpen, onClose, conversations, activeId, onSelect, onNew, onDelete, onRename, onTogglePin, onLogout, onOpenAdmin }: SidebarProps) {
   const [editingId, setEditingId] = useState<string | null>(null)
   const [draft, setDraft] = useState('')
 
@@ -24,7 +25,9 @@ export function Sidebar({ isOpen, onClose, conversations, activeId, onSelect, on
   const groups = useMemo(() => {
     const sorted = [...conversations].sort((a, b) => b.updatedAt - a.updatedAt)
     const out: { label: string; items: Conversation[] }[] = []
-    for (const c of sorted) {
+    const pinned = sorted.filter(c => c.pinned)
+    if (pinned.length) out.push({ label: 'Przypięte', items: pinned })
+    for (const c of sorted.filter(c => !c.pinned)) {
       const label = dateGroup(c.updatedAt)
       let g = out.find(x => x.label === label)
       if (!g) { g = { label, items: [] }; out.push(g) }
@@ -128,6 +131,15 @@ export function Sidebar({ isOpen, onClose, conversations, activeId, onSelect, on
                     </div>
                     {editingId !== c.id && (
                       <div className="hover-actions flex-shrink-0 flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button
+                          type="button"
+                          onClick={e => { e.stopPropagation(); onTogglePin(c.id) }}
+                          aria-label={c.pinned ? 'Odepnij' : 'Przypnij'}
+                          className="flex items-center justify-center rounded-md"
+                          style={{width:20,height:20,color:c.pinned ? 'var(--accent)' : 'var(--ink-faint)'}}
+                        >
+                          <PinIcon size={12} />
+                        </button>
                         <button
                           type="button"
                           onClick={e => { e.stopPropagation(); setEditingId(c.id); setDraft(c.title) }}

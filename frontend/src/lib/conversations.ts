@@ -7,6 +7,8 @@ export interface Conversation {
   updatedAt: number
   messages: Message[]
   systemPrompt?: string
+  model?: string
+  pinned?: boolean
 }
 
 const KEY = 'ai-chat-conversations'
@@ -29,6 +31,8 @@ function normalize(c: Partial<Conversation> & { date?: string }): Conversation {
     updatedAt: c.updatedAt ?? c.createdAt ?? now,
     messages: c.messages ?? [],
     systemPrompt: c.systemPrompt,
+    model: c.model,
+    pinned: c.pinned,
   }
 }
 
@@ -79,4 +83,22 @@ export function dateGroup(ts: number): string {
   if (diffDays < 7) return 'W tym tygodniu'
   if (diffDays < 30) return 'W tym miesiącu'
   return d.toLocaleDateString('pl-PL', { month: 'long', year: 'numeric' })
+}
+
+export function conversationToMarkdown(conv: Conversation): string {
+  const lines = [`# ${conv.title}`, '']
+  for (const m of conv.messages) {
+    lines.push(`## ${m.role === 'user' ? 'Ty' : 'Asystent'}`, '', m.content, '')
+  }
+  return lines.join('\n')
+}
+
+export function downloadConversation(conv: Conversation) {
+  const blob = new Blob([conversationToMarkdown(conv)], { type: 'text/markdown;charset=utf-8' })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = ((conv.title || 'rozmowa').split('/').join('-').slice(0, 40) || 'rozmowa') + '.md'
+  a.click()
+  URL.revokeObjectURL(url)
 }

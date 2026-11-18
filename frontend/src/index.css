@@ -185,3 +185,22 @@ body {
 }
 .markdown th { background: rgba(var(--ink-rgb),0.04); font-weight: 700; color: var(--ink); }
 .markdown tr:nth-child(even) td { background: rgba(var(--ink-rgb),0.02); }
+
+/* Blok „rozumowanie" (thinking) */
+.thinking { margin: 0.5em 0; }
+.thinking-toggle {
+  display: inline-flex; align-items: center; gap: 0.4em;
+  background: none; border: none; cursor: pointer; padding: 0;
+  font-size: 0.7rem; letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--ink-faint); font-weight: 600;
+}
+.thinking-toggle:hover { color: var(--ink-soft); }
+.thinking-caret { font-size: 0.8em; }
+.thinking-body {
+  margin-top: 0.4em; padding: 0.5em 0.7em;
+  font-size: 0.82rem; line-height: 1.55;
+  color: var(--ink-soft); white-space: pre-wrap;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
