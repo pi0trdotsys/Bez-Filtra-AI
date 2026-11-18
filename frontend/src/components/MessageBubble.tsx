@@ -16,6 +16,7 @@ interface MessageBubbleProps {
   onRegenerateWithModel?: (model: string) => void
   models?: { name: string; label: string }[]
   onEdit?: (id: string, content: string) => void
+  highlighted?: boolean
 }
 
 const fmtTime = (ts: number) =>
@@ -51,7 +52,7 @@ function ThinkingBlock({ text, live }: { text: string; live: boolean }) {
   )
 }
 
-export function MessageBubble({ message, isStreaming, isLast, onRegenerate, onRegenerateWithModel, models, onEdit }: MessageBubbleProps) {
+export function MessageBubble({ message, isStreaming, isLast, onRegenerate, onRegenerateWithModel, models, onEdit, highlighted }: MessageBubbleProps) {
   const isUser = message.role === 'user'
   const [copied, setCopied] = useState(false)
   const [editing, setEditing] = useState(false)
@@ -74,10 +75,12 @@ export function MessageBubble({ message, isStreaming, isLast, onRegenerate, onRe
 
   return (
     <motion.div
+      id={`msg-${message.id}`}
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.2, ease: 'easeOut' }}
       className={`group flex gap-2 items-end ${isUser ? 'flex-row-reverse' : 'flex-row'}`}
+      style={highlighted ? { outline: '2px solid var(--accent)', outlineOffset: '3px', borderRadius: 10 } : undefined}
     >
       <div
         className="flex-shrink-0 flex items-center justify-center rounded-full text-base"

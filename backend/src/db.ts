@@ -184,7 +184,7 @@ export async function getConversationLogs(opts: {
 export interface AdminStats {
   totals: { conversations: number; promptTok: number; genTok: number; energyKWh: number; waterL: number }
   perModel: { model: string; count: number; avgTps: number | null; totalTokens: number; energyKWh: number }[]
-  daily: { date: string; count: number }[]
+  daily: { date: string; count: number; tokens: number; energyKWh: number; waterL: number }[]
 }
 
 export async function getAdminStats(): Promise<AdminStats> {
@@ -207,7 +207,11 @@ export async function getAdminStats(): Promise<AdminStats> {
     ORDER BY count DESC
   `)
   const dailyRes = await pool.query(`
-    SELECT to_char(date_trunc('day', ts), 'YYYY-MM-DD') AS date, count(*)::int AS count
+    SELECT to_char(date_trunc('day', ts), 'YYYY-MM-DD') AS date,
+           count(*)::int AS count,
+           (coalesce(sum(prompt_tok),0) + coalesce(sum(gen_tok),0))::int AS "tokens",
+           coalesce(sum(energy_kwh),0)::float AS "energyKWh",
+           coalesce(sum(water_l),0)::float AS "waterL"
     FROM conversation_logs
     WHERE ts > now() - interval '14 days'
     GROUP BY 1

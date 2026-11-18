@@ -139,6 +139,7 @@ function StatCard({ label, value }: { label: string; value: string }) {
 function StatsTab() {
   const [stats, setStats] = useState<AdminStats | null>(null)
   const [error, setError] = useState('')
+  const [metric, setMetric] = useState<'count' | 'tokens' | 'energy' | 'water'>('count')
 
   useEffect(() => {
     fetchAdminStats().then(setStats).catch(err => setError(err instanceof Error ? err.message : 'Błąd'))
@@ -188,15 +189,29 @@ function StatsTab() {
 
       {stats.daily.length > 0 && (
         <div>
-          <p className="text-xs mb-2" style={{ color: 'var(--ink-soft)' }}>Ostatnie 14 dni</p>
-          <div className="flex items-end gap-1" style={{ height: 60 }}>
+          <div className="flex items-center justify-between mb-2">
+            <p className="text-xs" style={{ color: 'var(--ink-soft)' }}>Ostatnie 14 dni</p>
+            <div className="flex gap-1">
+              {(['count', 'tokens', 'energy', 'water'] as const).map(k => (
+                <button key={k} onClick={() => setMetric(k)}
+                  className="text-[10px] px-2 py-0.5 rounded-md"
+                  style={{ background: metric === k ? 'var(--accent-soft)' : 'transparent', color: metric === k ? 'var(--ink)' : 'var(--ink-faint)' }}>
+                  {k === 'count' ? 'Rozmowy' : k === 'tokens' ? 'Tokeny' : k === 'energy' ? 'Energia' : 'Woda'}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className="flex items-end gap-1" style={{ height: 64 }}>
             {stats.daily.map(d => {
-              const max = Math.max(...stats.daily.map(x => x.count), 1)
+              const v = (x: typeof d) => metric === 'count' ? x.count : metric === 'tokens' ? x.tokens : metric === 'energy' ? x.energyKWh * 1000 : x.waterL * 1000
+              const max = Math.max(...stats.daily.map(x => v(x)), 1)
+              const val = v(d)
+              const label = metric === 'energy' ? `${(d.energyKWh * 1000).toFixed(0)} Wh` : metric === 'water' ? `${(d.waterL * 1000).toFixed(0)} ml` : metric === 'tokens' ? `${d.tokens.toLocaleString('pl-PL')} tok` : `${d.count} rozm.`
               return (
-                <div key={d.date} className="flex-1 flex flex-col items-center justify-end gap-1" title={`${d.date}: ${d.count}`}>
+                <div key={d.date} className="flex-1 flex flex-col items-center justify-end gap-1" title={`${d.date}: ${label}`}>
                   <div
                     className="w-full rounded-sm"
-                    style={{ height: `${Math.max(4, (d.count / max) * 48)}px`, background: 'var(--accent)' }}
+                    style={{ height: `${Math.max(4, (val / max) * 52)}px`, background: 'var(--accent)' }}
                   />
                 </div>
               )

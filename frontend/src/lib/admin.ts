@@ -25,7 +25,7 @@ export interface ConversationLogRow {
 export interface AdminStats {
   totals: { conversations: number; promptTok: number; genTok: number; energyKWh: number; waterL: number }
   perModel: { model: string; count: number; avgTps: number | null; totalTokens: number; energyKWh: number }[]
-  daily: { date: string; count: number }[]
+  daily: { date: string; count: number; tokens: number; energyKWh: number; waterL: number }[]
 }
 
 export function hasAdminSession(): boolean {

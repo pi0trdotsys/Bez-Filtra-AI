@@ -125,6 +125,7 @@ export function ChatWindow({ onLogout }: { onLogout: () => void }) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [sidebarCollapsed, setSidebarCollapsed] = useState(() => localStorage.getItem('ai-chat-sidebar-collapsed') === '1')
   const [paletteOpen, setPaletteOpen] = useState(false)
+  const [highlightId, setHighlightId] = useState<string | null>(null)
   const [modelPickerOpen, setModelPickerOpen] = useState(false)
   const [atBottom, setAtBottom] = useState(true)
   const [theme, setTheme] = useState<Theme>(getStoredTheme)
@@ -223,6 +224,21 @@ export function ChatWindow({ onLogout }: { onLogout: () => void }) {
   const handleRegenerateWithModel = (m: string) => {
     handleSelectModel(m)
     regenerateWithModel(m)
+  }
+
+  const handleJumpTo = (convId: string, messageId: string) => {
+    if (convId !== activeId) {
+      const conv = conversations.find(c => c.id === convId)
+      if (!conv) return
+      setActiveId(convId)
+      setMessages(conv.messages)
+      setSelectedModel(conv.model || localStorage.getItem('ai-chat-model') || FALLBACK_MODEL)
+    }
+    setHighlightId(messageId)
+    setTimeout(() => {
+      document.getElementById(`msg-${messageId}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    }, 120)
+    setTimeout(() => setHighlightId(null), 3000)
   }
 
   // Tytuł generowany modelem w tle (po pierwszym pytaniu).
@@ -567,6 +583,7 @@ export function ChatWindow({ onLogout }: { onLogout: () => void }) {
               onSelectConversation={handleSelect}
               onSelectModel={handleSelectModel}
               onOpenPersona={() => setShowPersona(true)}
+              onJumpTo={handleJumpTo}
             />
           )}
         </AnimatePresence>
@@ -637,6 +654,7 @@ export function ChatWindow({ onLogout }: { onLogout: () => void }) {
                 onRegenerateWithModel={handleRegenerateWithModel}
                 models={modelList}
                 onEdit={editMessage}
+                highlighted={msg.id === highlightId}
               />
             ))}
           </AnimatePresence>

@@ -14,6 +14,7 @@ interface CommandPaletteProps {
   onSelectConversation: (id: string) => void
   onSelectModel: (name: string) => void
   onOpenPersona: () => void
+  onJumpTo?: (convId: string, messageId: string) => void
 }
 
 interface Item {
@@ -24,9 +25,17 @@ interface Item {
   run: () => void
 }
 
+const snippet = (content: string, q: string): string => {
+  const idx = content.toLowerCase().indexOf(q.toLowerCase())
+  if (idx === -1) return content.replace(/\s+/g, ' ').trim().slice(0, 70)
+  const start = Math.max(0, idx - 30)
+  const end = Math.min(content.length, idx + q.length + 50)
+  return (start > 0 ? '…' : '') + content.slice(start, end).replace(/\s+/g, ' ').trim() + (end < content.length ? '…' : '')
+}
+
 export function CommandPalette({
   onClose, conversations, models, selectedModel, defaultModel,
-  onNewChat, onSelectConversation, onSelectModel, onOpenPersona,
+  onNewChat, onSelectConversation, onSelectModel, onOpenPersona, onJumpTo,
 }: CommandPaletteProps) {
   const [query, setQuery] = useState('')
   const [sel, setSel] = useState(0)
@@ -59,25 +68,36 @@ export function CommandPalette({
       })
     }
 
-    // Rozmowy (po tytule i treści)
+    // Rozmowy (po tytule i treści) + przeskok do konkretnej wiadomości
     const convs = [...conversations].sort((a, b) => b.updatedAt - a.updatedAt)
     for (const c of convs) {
-      if (q) {
-        const inTitle = match(c.title)
-        const inBody = c.messages.some(msg => match(msg.content))
-        if (!inTitle && !inBody) continue
+      const inTitle = !q || match(c.title)
+      const hits = q ? c.messages.filter(m => match(m.content)) : []
+      if (q && !inTitle && hits.length === 0) continue
+      if (q && onJumpTo) {
+        for (const m of hits.slice(0, 3)) {
+          out.push({
+            key: `msg:${c.id}:${m.id}`,
+            icon: <SearchIcon size={15} />,
+            label: c.title,
+            sub: snippet(m.content, q),
+            run: () => onJumpTo(c.id, m.id),
+          })
+        }
       }
-      out.push({
-        key: 'conv:' + c.id,
-        icon: <ChatIcon size={15} />,
-        label: c.title,
-        sub: `${c.messages.length} wiadomości`,
-        run: () => onSelectConversation(c.id),
-      })
+      if (inTitle || hits.length === 0) {
+        out.push({
+          key: 'conv:' + c.id,
+          icon: <ChatIcon size={15} />,
+          label: c.title,
+          sub: `${c.messages.length} wiadomości`,
+          run: () => onSelectConversation(c.id),
+        })
+      }
     }
 
     return out
-  }, [q, models, conversations, current, onNewChat, onOpenPersona, onSelectModel, onSelectConversation])
+  }, [q, models, conversations, current, onNewChat, onOpenPersona, onSelectModel, onSelectConversation, onJumpTo])
 
   useEffect(() => { setSel(0) }, [q])
 
