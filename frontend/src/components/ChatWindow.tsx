@@ -186,7 +186,7 @@ export function ChatWindow({ onLogout }: { onLogout: () => void }) {
         return {
           ...c,
           messages,
-          title: c.title === 'Nowa rozmowa' ? deriveTitle(messages) : c.title,
+          title: c.title,
           updatedAt: changed ? Date.now() : c.updatedAt,
         }
       })
@@ -241,7 +241,7 @@ export function ChatWindow({ onLogout }: { onLogout: () => void }) {
     setTimeout(() => setHighlightId(null), 3000)
   }
 
-  // Tytuł generowany modelem w tle (po pierwszym pytaniu).
+  // Tytuł generowany modelem w tle (po pierwszym pytaniu); fallback = skrót pytania.
   const titleRequestedRef = useRef<Set<string>>(new Set())
   useEffect(() => {
     const conv = conversations.find(c => c.id === activeId)
@@ -249,7 +249,9 @@ export function ChatWindow({ onLogout }: { onLogout: () => void }) {
     const firstUser = conv.messages.find(m => m.role === 'user')?.content?.trim()
     if (!firstUser || titleRequestedRef.current.has(conv.id)) return
     titleRequestedRef.current.add(conv.id)
-    const fallback = conv.title
+    const applyTitle = (t: string) => {
+      setConversations(prev => prev.map(c => (c.id === conv.id && c.title === 'Nowa rozmowa' ? { ...c, title: t } : c)))
+    }
     ;(async () => {
       try {
         const res = await fetch('/api/title', {
@@ -257,12 +259,12 @@ export function ChatWindow({ onLogout }: { onLogout: () => void }) {
           headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('token')}` },
           body: JSON.stringify({ text: firstUser }),
         })
-        if (!res.ok) return
-        const data = (await res.json()) as { title?: string }
-        if (data.title) {
-          setConversations(prev => prev.map(c => (c.id === activeId && c.title === fallback ? { ...c, title: data.title! } : c)))
+        if (res.ok) {
+          const data = (await res.json()) as { title?: string }
+          if (data.title) { applyTitle(data.title); return }
         }
-      } catch { /* zostaje tytuł fallback */ }
+      } catch { /* spadamy do fallbacku */ }
+      applyTitle(deriveTitle(conv.messages))
     })()
   }, [conversations, activeId])
 
@@ -624,6 +626,9 @@ export function ChatWindow({ onLogout }: { onLogout: () => void }) {
                   </p>
                   <p className="mt-4" style={{fontSize:10,letterSpacing:'0.22em',color:'var(--ink-faint)',textTransform:'uppercase'}}>
                     bez cenzury · bez tematów tabu
+                  </p>
+                  <p className="mt-5 text-sm leading-relaxed mx-auto" style={{color:'var(--ink-soft)',maxWidth:340}}>
+                    {describeModel(selectedModel).greeting}
                   </p>
                   <div className="flex flex-col gap-1.5 mt-7">
                     {EXAMPLE_PROMPTS.map((p, idx) => (

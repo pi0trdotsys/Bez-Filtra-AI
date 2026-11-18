@@ -10,7 +10,9 @@ export function useModels() {
     fetchModels()
       .then(data => {
         if (cancelled) return
-        setModels(data.models)
+        // Ten serwis jest tylko dla modeli abliterowanych - ukrywamy pozostałe
+        // (np. Bielika), żeby nie kusiły w dropdownie.
+        setModels(data.models.filter(m => m.name.toLowerCase().includes('abliterat')))
         setDefaultModel(data.default)
       })
       .catch(() => {
