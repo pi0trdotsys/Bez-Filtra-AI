@@ -20,78 +20,34 @@ interface ModelRule {
 
 // Kolory rodzin modeli - stonowane, „drukowe" (używane wyłącznie jako mała
 // kropka/odznaka modelu, nie jako tint całego UI):
-const VIOLET = '204,94,35'    // Qwen (domyślny/marka) - ochra
-const PINK = '19,124,110'     // Dolphin - teal
-const RED = '177,60,45'       // DeepSeek - cegła
-const AMBER = '178,124,26'    // Bielik - złoto
-const ORANGE = '150,100,60'   // Llama - brąz
-const SKY = '58,96,143'       // Mistral - stalowy błękit
+const OCHRA = '204,94,35'   // Qwen
+const TEAL = '19,124,110'   // Dolphin
+const BRICK = '177,60,45'   // DeepSeek
+const GOLD = '178,124,26'   // Bielik
+const BROWN = '150,100,60'  // Llama
+const STEEL = '58,96,143'   // Mistral
 
 const RULES: ModelRule[] = [
-  {
-    match: 'dolphin-pl',
-    meta: {
-      label: 'Dolphin PL',
-      desc: 'Szybki i zawsze po polsku - odpowiada w kilka sekund. Idealny do codziennych rozmów.',
-      tags: ['po polsku', 'szybki', 'bez cenzury'],
-      greeting: 'Cześć! Jestem szybki i zawsze mówię po polsku. Pytaj o cokolwiek.',
-      icon: 'waves',
-      accentRgb: PINK,
-    },
-  },
-  {
-    match: 'huihui_ai/dolphin3-abliterated',
-    meta: {
-      label: 'Dolphin 3',
-      desc: 'Rozmowny i swobodny, dobrze radzi sobie po polsku. Dobry wybór na każdy temat.',
-      tags: ['po polsku', 'bez cenzury'],
-      greeting: 'Cześć! Odpowiem swobodnie na naprawdę każde pytanie. Pytaj śmiało.',
-      icon: 'waves',
-      accentRgb: PINK,
-    },
-  },
-  {
-    match: 'huihui_ai/qwen2.5-abliterate:14b',
-    meta: {
-      label: 'Qwen 2.5 (14B)',
-      desc: 'Najbystrzejszy z dostępnych. Najlepszy do trudnych pytań, analizy i dłuższych tekstów - odpowiada nieco wolniej.',
-      tags: ['najmądrzejszy', 'bez cenzury'],
-      greeting: 'Cześć! Jestem najbystrzejszym modelem tutaj. Rzucaj trudnymi pytaniami - poradzę sobie.',
-      icon: 'cpu',
-      accentRgb: VIOLET,
-    },
-  },
-  {
-    match: 'huihui_ai/qwen2.5-abliterate:3b',
-    meta: {
-      label: 'Qwen 2.5 (3B)',
-      desc: 'Błyskawiczny - odpowiada niemal natychmiast. Najlepszy do prostych, szybkich pytań.',
-      tags: ['najszybszy', 'bez cenzury'],
-      greeting: 'Cześć! Jestem błyskawiczny - odpowiadam od ręki. Pytaj śmiało.',
-      icon: 'bolt',
-      accentRgb: VIOLET,
-    },
-  },
-  {
-    match: 'huihui_ai/qwen2.5-abliterate',
-    meta: {
-      label: 'Qwen 2.5 (7B)',
-      desc: 'Złoty środek - bystry i wciąż szybki. Świetny do większości pytań i rozmów.',
-      tags: ['polecany', 'bez cenzury'],
-      greeting: 'Cześć! Jestem dobrze zbalansowany - bystry, a przy tym szybki. Pytaj o cokolwiek.',
-      icon: 'cpu',
-      accentRgb: VIOLET,
-    },
-  },
   {
     match: 'huihui_ai/qwen3-abliterated:8b',
     meta: {
       label: 'Qwen 3 (8B)',
-      desc: 'Najlepszy balans - jakość 14B przy połowie RAM. Szybki nawet na CPU, dobrze po polsku.',
+      desc: 'Domyślny model - najlepszy balans jakości do szybkości na CPU. Dobrze radzi sobie po polsku.',
       tags: ['polecany', 'bez cenzury'],
-      greeting: 'Cześć! Jestem szybki i bystry - idealny na co dzień.',
+      greeting: 'Cześć! Jestem Qwenem 3 - szybkim i bystrym. Pytaj o cokolwiek.',
       icon: 'sparkles',
-      accentRgb: VIOLET,
+      accentRgb: OCHRA,
+    },
+  },
+  {
+    match: 'huihui_ai/qwen3-abliterated:4b',
+    meta: {
+      label: 'Qwen 3 (4B)',
+      desc: 'Lekki i szybki - awaryjny model, gdy 8B się nie załaduje albo chcesz maksymalnej prędkości.',
+      tags: ['szybki', 'bez cenzury'],
+      greeting: 'Cześć! Jestem lekkim Qwenem 3 - odpowiadam błyskawicznie.',
+      icon: 'bolt',
+      accentRgb: OCHRA,
     },
   },
   {
@@ -102,7 +58,7 @@ const RULES: ModelRule[] = [
       tags: ['najmądrzejszy', 'bez cenzury'],
       greeting: 'Cześć! Jestem najmocniejszym Qwenem 3 - rzucaj trudne pytania.',
       icon: 'cpu',
-      accentRgb: VIOLET,
+      accentRgb: OCHRA,
     },
   },
   {
@@ -113,73 +69,106 @@ const RULES: ModelRule[] = [
       tags: ['najmądrzejszy', 'bez cenzury'],
       greeting: 'Cześć! Jestem największym modelem - do najtrudniejszych zadań.',
       icon: 'cpu',
-      accentRgb: VIOLET,
+      accentRgb: OCHRA,
     },
   },
   {
     match: 'huihui_ai/qwen3-abliterated',
     meta: {
       label: 'Qwen 3',
-      desc: 'Najnowsza generacja - bystre, naturalne odpowiedzi na każdy temat.',
-      tags: ['nowość', 'bez cenzury'],
-      greeting: 'Cześć! Jestem najnowszą generacją Qwena. Pytaj o cokolwiek.',
+      desc: 'Najnowsza generacja Qwena - bystre, naturalne odpowiedzi.',
+      tags: ['bez cenzury'],
+      greeting: 'Cześć! Jestem Qwenem 3. Pytaj o cokolwiek.',
       icon: 'sparkles',
-      accentRgb: VIOLET,
+      accentRgb: OCHRA,
     },
   },
   {
-    match: 'dolphin3',
+    match: 'huihui_ai/dolphin3-abliterated',
     meta: {
       label: 'Dolphin 3',
       desc: 'Swobodny i bezpośredni, dobrze mówi po polsku. Dobry do każdej rozmowy.',
       tags: ['po polsku', 'bez cenzury'],
       greeting: 'Hej! Odpowiem swobodnie na każdy temat. Zaczynajmy.',
       icon: 'waves',
-      accentRgb: PINK,
+      accentRgb: TEAL,
     },
   },
   {
-    match: 'dolphin-mistral',
+    match: 'dolphin3',
     meta: {
-      label: 'Dolphin Mistral',
-      desc: 'Lekki i szybki. Najlepiej radzi sobie po angielsku.',
-      tags: ['szybki', 'bez cenzury'],
-      greeting: 'Cześć! Jestem lekki i szybki. Lecimy z pytaniami.',
-      icon: 'bolt',
-      accentRgb: PINK,
-    },
-  },
-  {
-    match: 'speakleash/bielik-4.5b',
-    meta: {
-      label: 'Bielik 4.5B',
-      desc: 'Polski model - lekki i szybki, ze świetną znajomością polskiego.',
-      tags: ['po polsku', 'szybki'],
-      greeting: 'Cześć! Jestem polskim modelem - lekkim i szybkim. Pytaj po polsku.',
-      icon: 'feather',
-      accentRgb: AMBER,
-    },
-  },
-  {
-    match: 'speakleash/bielik',
-    meta: {
-      label: 'Bielik 11B',
-      desc: 'Najlepsza polszczyzna i wiedza o Polsce - model rodzimej produkcji.',
-      tags: ['po polsku'],
-      greeting: 'Dzień dobry! Mówię najlepszą polszczyzną ze wszystkich tutaj.',
-      icon: 'feather',
-      accentRgb: AMBER,
+      label: 'Dolphin 3',
+      desc: 'Swobodny i bezpośredni, dobrze mówi po polsku.',
+      tags: ['po polsku', 'bez cenzury'],
+      greeting: 'Hej! Odpowiem swobodnie na każdy temat. Zaczynajmy.',
+      icon: 'waves',
+      accentRgb: TEAL,
     },
   },
   {
     match: 'huihui_ai/deepseek-r1-abliterated',
     meta: {
       label: 'DeepSeek R1',
-      desc: 'Rozważa problem krok po kroku, zanim odpowie. Dobry do zagadek, logiki i matematyki.',
+      desc: 'Rozumujący - myśli krok po kroku przed odpowiedzią. Dobry do logiki, matematyki i zagadek.',
       tags: ['rozumowanie', 'bez cenzury'],
       greeting: 'Cześć! Zanim odpowiem, przemyślę problem krok po kroku. Rzuć mi coś trudnego.',
       icon: 'flame',
-      accentRgb: RED,
+      accentRgb: BRICK,
+    },
+  },
+  {
+    match: 'huihui_ai/qwen2.5-abliterate:14b',
+    meta: {
+      label: 'Qwen 2.5 (14B)',
+      desc: 'Poprzednia generacja - solidna, ale Qwen 3 jest lepszy w tym samym rozmiarze.',
+      tags: ['bez cenzury'],
+      greeting: 'Cześć! Jestem Qwenem 2.5 - poprzednią, ale wciąż solidną generacją.',
+      icon: 'cpu',
+      accentRgb: OCHRA,
+    },
+  },
+  {
+    match: 'huihui_ai/qwen2.5-abliterate',
+    meta: {
+      label: 'Qwen 2.5',
+      desc: 'Poprzednia generacja Qwena.',
+      tags: ['bez cenzury'],
+      greeting: 'Cześć! Jestem Qwenem 2.5.',
+      icon: 'cpu',
+      accentRgb: OCHRA,
+    },
+  },
+  {
+    match: 'speakleash/bielik-4.5b',
+    meta: {
+      label: 'Bielik 4.5B',
+      desc: 'Polski model - lekki i szybki, ze świetną znajomością polskiego. Nie jest abliterowany.',
+      tags: ['po polsku', 'szybki'],
+      greeting: 'Cześć! Jestem polskim modelem - lekkim i szybkim. Pytaj po polsku.',
+      icon: 'feather',
+      accentRgb: GOLD,
+    },
+  },
+  {
+    match: 'speakleash/bielik',
+    meta: {
+      label: 'Bielik 11B',
+      desc: 'Najlepsza polszczyzna i wiedza o Polsce - model rodzimej produkcji. Nie jest abliterowany.',
+      tags: ['po polsku'],
+      greeting: 'Dzień dobry! Mówię najlepszą polszczyzną ze wszystkich tutaj.',
+      icon: 'feather',
+      accentRgb: GOLD,
+    },
+  },
+  {
+    match: 'bielik',
+    meta: {
+      label: 'Bielik',
+      desc: 'Polski model z rodzimej produkcji. Nie jest abliterowany.',
+      tags: ['po polsku'],
+      greeting: 'Dzień dobry! Jestem polskim modelem Bielik.',
+      icon: 'feather',
+      accentRgb: GOLD,
     },
   },
   {
@@ -190,7 +179,7 @@ const RULES: ModelRule[] = [
       tags: ['rzeczowy'],
       greeting: 'Cześć! Jestem konkretny i na temat. W czym pomóc?',
       icon: 'layers',
-      accentRgb: ORANGE,
+      accentRgb: BROWN,
     },
   },
   {
@@ -201,7 +190,7 @@ const RULES: ModelRule[] = [
       tags: ['ogólny'],
       greeting: 'Hej! Jestem do ogólnych rozmów. W czym mogę pomóc?',
       icon: 'layers',
-      accentRgb: ORANGE,
+      accentRgb: BROWN,
     },
   },
   {
@@ -212,7 +201,7 @@ const RULES: ModelRule[] = [
       tags: ['kod', 'matematyka'],
       greeting: 'Cześć! Najmocniejszy jestem w kodzie i liczbach. Rzuć mi wyzwanie.',
       icon: 'cpu',
-      accentRgb: VIOLET,
+      accentRgb: OCHRA,
     },
   },
   {
@@ -223,13 +212,13 @@ const RULES: ModelRule[] = [
       tags: ['szybki'],
       greeting: 'Hej! Szybko i na temat - o co chodzi?',
       icon: 'wind',
-      accentRgb: SKY,
+      accentRgb: STEEL,
     },
   },
 ]
 
 const FALLBACK_META: ModelMeta = {
-  label: '', desc: 'Model lokalny.', tags: [], greeting: 'Cześć! Gotowy do rozmowy.', icon: 'bot', accentRgb: VIOLET,
+  label: '', desc: 'Model lokalny.', tags: [], greeting: 'Cześć! Gotowy do rozmowy.', icon: 'bot', accentRgb: OCHRA,
 }
 
 export function describeModel(name: string): ModelMeta {
