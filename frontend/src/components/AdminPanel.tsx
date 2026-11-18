@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { LockIcon, XIcon } from './Icons'
+import { formatEnergy } from '@/lib/format'
 import {
   adminLogin, hasAdminSession, clearAdminSession,
   fetchAdminConversations, fetchAdminStats,
@@ -154,7 +155,7 @@ function StatsTab() {
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         <StatCard label="Rozmowy" value={totals.conversations.toLocaleString('pl-PL')} />
         <StatCard label="Tokeny" value={(totals.promptTok + totals.genTok).toLocaleString('pl-PL')} />
-        <StatCard label="Energia" value={`${(totals.energyKWh * 1000).toFixed(1)} Wh`} />
+        <StatCard label="Energia" value={formatEnergy(totals.energyKWh)} />
         <StatCard label="Woda" value={`${(totals.waterL * 1000).toFixed(0)} ml`} />
       </div>
 
@@ -176,7 +177,7 @@ function StatsTab() {
                   <td className="px-3 py-2" style={{ color: 'var(--ink-soft)' }}>{m.count}</td>
                   <td className="px-3 py-2" style={{ color: 'var(--ink-soft)' }}>{m.avgTps ?? '–'}</td>
                   <td className="px-3 py-2" style={{ color: 'var(--ink-soft)' }}>{m.totalTokens.toLocaleString('pl-PL')}</td>
-                  <td className="px-3 py-2" style={{ color: 'var(--ink-soft)' }}>{(m.energyKWh * 1000).toFixed(1)} Wh</td>
+                  <td className="px-3 py-2" style={{ color: 'var(--ink-soft)' }}>{formatEnergy(m.energyKWh)}</td>
                 </tr>
               ))}
               {perModel.length === 0 && (
@@ -203,10 +204,21 @@ function StatsTab() {
           </div>
           <div className="flex items-end gap-1" style={{ height: 64 }}>
             {stats.daily.map(d => {
-              const v = (x: typeof d) => metric === 'count' ? x.count : metric === 'tokens' ? x.tokens : metric === 'energy' ? x.energyKWh * 1000 : x.waterL * 1000
-              const max = Math.max(...stats.daily.map(x => v(x)), 1)
-              const val = v(d)
-              const label = metric === 'energy' ? `${(d.energyKWh * 1000).toFixed(0)} Wh` : metric === 'water' ? `${(d.waterL * 1000).toFixed(0)} ml` : metric === 'tokens' ? `${d.tokens.toLocaleString('pl-PL')} tok` : `${d.count} rozm.`
+              const valueOf = (m: typeof metric): number => {
+                if (m === 'count') return d.count ?? 0
+                if (m === 'tokens') return d.tokens ?? 0
+                if (m === 'energy') return d.energyKWh ?? 0
+                return (d.waterL ?? 0) * 1000
+              }
+              const maxOf = (x: typeof d): number => {
+                if (metric === 'count') return x.count ?? 0
+                if (metric === 'tokens') return x.tokens ?? 0
+                if (metric === 'energy') return x.energyKWh ?? 0
+                return (x.waterL ?? 0) * 1000
+              }
+              const val = valueOf(metric)
+              const max = Math.max(...stats.daily.map(maxOf), 1)
+              const label = metric === 'energy' ? formatEnergy(d.energyKWh ?? 0) : metric === 'water' ? `${((d.waterL ?? 0) * 1000).toFixed(0)} ml` : metric === 'tokens' ? `${(d.tokens ?? 0).toLocaleString('pl-PL')} tok` : `${d.count ?? 0} rozm.`
               return (
                 <div key={d.date} className="flex-1 flex flex-col items-center justify-end gap-1" title={`${d.date}: ${label}`}>
                   <div

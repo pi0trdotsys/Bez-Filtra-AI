@@ -20,6 +20,7 @@ import {
   type Conversation,
 } from '@/lib/conversations'
 import { describeModel } from '@/lib/models'
+import { formatEnergy } from '@/lib/format'
 import { getStoredTheme, toggleTheme, type Theme } from '@/lib/theme'
 import { ModelIcon, SearchIcon, SlidersIcon, TrashIcon, ChartIcon, BatteryIcon, DropletIcon, SunIcon, MoonIcon, AutoIcon, ExportIcon, FlameIcon, BombIcon, SkullIcon, BanIcon } from './Icons'
 
@@ -513,7 +514,7 @@ export function ChatWindow({ onLogout }: { onLogout: () => void }) {
                 title={`Sesja: ${formatTokens(sessionTokens)} tok · ${(sessionEnergyKWh*1000).toFixed(1)} Wh · ${(sessionWaterL*1000).toFixed(0)} ml`}
               >
                 <span style={{display:'inline-flex',alignItems:'center',gap:4}}><ChartIcon size={12} /> {formatTokens(sessionTokens)} tok</span>
-                <span style={{display:'inline-flex',alignItems:'center',gap:4}}><BatteryIcon size={12} /> {(sessionEnergyKWh*1000).toFixed(1)} Wh</span>
+                <span style={{display:'inline-flex',alignItems:'center',gap:4}}><BatteryIcon size={12} /> {formatEnergy(sessionEnergyKWh)}</span>
                 <span style={{display:'inline-flex',alignItems:'center',gap:4}}><DropletIcon size={12} /> {(sessionWaterL*1000).toFixed(0)} ml</span>
               </span>
             )}

@@ -7,6 +7,7 @@ import {
   UserIcon, SparkGlyph, ChartIcon, BoltGlyph, ClockIcon, BatteryIcon, DropletIcon,
   CopyIcon, RefreshIcon, EditIcon, CheckIcon, ModelIcon,
 } from './Icons'
+import { formatEnergy } from '@/lib/format'
 
 interface MessageBubbleProps {
   message: Message
@@ -161,7 +162,7 @@ export function MessageBubble({ message, isStreaming, isLast, onRegenerate, onRe
                 if (s.responseTimeMs != null)
                   parts.push({ icon: <ClockIcon size={11} />, value: `${(s.responseTimeMs / 1000).toFixed(1)} s`, title: 'czas odpowiedzi' })
                 if (s.energyKWh != null)
-                  parts.push({ icon: <BatteryIcon size={11} />, value: `${(s.energyKWh * 1000).toFixed(2)} Wh`, title: 'zużycie energii' })
+                  parts.push({ icon: <BatteryIcon size={11} />, value: formatEnergy(s.energyKWh), title: 'zużycie energii' })
                 if (s.waterL != null)
                   parts.push({ icon: <DropletIcon size={11} />, value: `${(s.waterL * 1000).toFixed(1)} ml`, title: 'zużycie wody (chłodzenie)' })
                 return (
