@@ -106,7 +106,7 @@ Uzupełnij `.env`:
 JWT_SECRET=<losowy_ciąg_znaków>
 ACCESS_PASSWORD=<twoje_hasło>
 FRONTEND_URL=*
-DEFAULT_MODEL=dolphin-pl:latest
+DEFAULT_MODEL=huihui_ai/qwen3-abliterated:8b
 POSTGRES_PASSWORD=<losowy_ciąg_znaków>
 ```
 
@@ -158,10 +158,33 @@ docker cp ~/dolphin-pl.Modelfile ollama:/tmp/dolphin-pl.Modelfile
 docker exec ollama ollama create dolphin-pl -f /tmp/dolphin-pl.Modelfile
 
 # Inteligentniejszy, wciąż szybki na słabszym CPU (domyślny)
-docker exec -it ollama ollama pull huihui_ai/qwen2.5-abliterate:7b
+docker exec -it ollama ollama pull huihui_ai/qwen3-abliterated:8b
 ```
 
 (Jeśli używasz natywnej Ollamy zamiast tej w Dockerze - patrz punkt 2 - zamień `docker exec -it ollama ollama pull ...` na zwykłe `ollama pull ...` na hoście, z odpowiednim `OLLAMA_HOST`.)
+
+### 4b. Tuning wydajności na CPU (bez GPU)
+
+Gdy Ollama działa natywnie na hoście, liczy się przepustowość RAM i liczba wątków. Zmienne w `.env`:
+
+| Zmienna | Domyślnie | Opis |
+|---|---|---|
+| `DEFAULT_MODEL` | `huihui_ai/qwen3-abliterated:8b` | domyślny model |
+| `OLLAMA_KEEP_ALIVE` | `10m` | po jakim czasie bezczynności zwolnić model z RAM |
+| `FALLBACK_MODEL` | *(puste)* | awaryjny mniejszy model, gdy główny się nie załaduje (np. `huihui_ai/qwen3-abliterated:4b`) |
+| `OLLAMA_NUM_CTX` | `2048` | rozmiar okna kontekstu (mniej = szybciej i mniej RAM) |
+| `MAX_CONTEXT_MESSAGES` | `20` | ile ostatnich wiadomości trafia do modelu |
+
+Rekomendowane ustawienia natywnej Ollamy (systemd, `override.conf`):
+
+```ini
+[Service]
+Environment="OLLAMA_HOST=172.17.0.1:11434"
+Environment="OLLAMA_NUM_PARALLEL=1"
+```
+
+- `OLLAMA_NUM_PARALLEL=1` daje najwyższe tok/s przy jednym użytkowniku (cały CPU na jedno zapytanie).
+- Przy 16 GB RAM `huihui_ai/qwen3-abliterated:8b` (5 GB) to najlepszy balans jakości do szybkości; `:4b` (2.5 GB) sprawdzi się jako zapas/fallback.
 
 ### 5. Cloudflare Tunnel (brak publicznego IP)
 

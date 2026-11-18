@@ -16,14 +16,13 @@ app.set('trust proxy', true)
 const ollama = new Ollama({ host: process.env.OLLAMA_URL || 'http://localhost:11434' })
 const DEFAULT_MODEL = process.env.DEFAULT_MODEL || 'huihui_ai/qwen3-abliterated:8b'
 const KEEP_ALIVE = process.env.OLLAMA_KEEP_ALIVE || '10m'
+const FALLBACK_MODEL = process.env.FALLBACK_MODEL || ''
+const NUM_CTX = Number(process.env.OLLAMA_NUM_CTX) || 2048
 
 // Opcje generowania per model - balans między jakością a szybkością
 function modelOptions(model: string): Record<string, unknown> {
-  const base = { temperature: 0.7, repeat_penalty: 1.1, num_ctx: 2048 }
-  // Qwen 14B: mniejszy kontekst = więcej VRAM wolnego na warstwy GPU
-  if (model.includes('qwen')) return { ...base, num_ctx: 2048 }
-  // Dolphin 8B: 4.9GB nie mieści się w 4GB VRAM - mały kontekst = więcej GPU layers
-  if (model.includes('dolphin')) return { ...base, num_ctx: 1536 }
+  const base = { temperature: 0.7, repeat_penalty: 1.1, num_ctx: NUM_CTX }
+  if (model.includes('dolphin')) return { ...base, num_ctx: Math.min(NUM_CTX, 1536) }
   return base
 }
 
@@ -272,8 +271,21 @@ app.post('/api/chat', requireAuth, async (req, res) => {
       abortStream?.()
     }
   })
+  let activeModel = model
   try {
-    const stream = await ollama.chat({ model, messages: messagesWithSystem, stream: true, options: modelOptions(model), keep_alive: KEEP_ALIVE })
+    let stream: any
+    try {
+      stream = await ollama.chat({ model: activeModel, messages: messagesWithSystem, stream: true, options: modelOptions(activeModel), keep_alive: KEEP_ALIVE })
+    } catch (loadErr) {
+      const msg = loadErr instanceof Error ? loadErr.message : String(loadErr)
+      if (FALLBACK_MODEL && activeModel !== FALLBACK_MODEL) {
+        log(`↻ model ${activeModel} niedostępny, używam fallbacku ${FALLBACK_MODEL}: ${msg}`)
+        activeModel = FALLBACK_MODEL
+        stream = await ollama.chat({ model: activeModel, messages: messagesWithSystem, stream: true, options: modelOptions(activeModel), keep_alive: KEEP_ALIVE })
+      } else {
+        throw loadErr
+      }
+    }
     abortStream = () => stream.abort()
     for await (const chunk of stream) {
       const content = chunk.message.content
@@ -312,7 +324,7 @@ app.post('/api/chat', requireAuth, async (req, res) => {
         await logConversation({
           ts: new Date().toISOString(),
           ip: req.ip,
-          model,
+          model: activeModel,
           question: lastUser,
           answer,
           stats,
@@ -335,7 +347,7 @@ app.post('/api/chat', requireAuth, async (req, res) => {
       await logConversation({
         ts: new Date().toISOString(),
         ip: req.ip,
-        model,
+        model: activeModel,
         question: lastUser,
         answer,
         error: 'przerwano przez klienta',
@@ -346,7 +358,7 @@ app.post('/api/chat', requireAuth, async (req, res) => {
       await logConversation({
         ts: new Date().toISOString(),
         ip: req.ip,
-        model,
+        model: activeModel,
         question: lastUser,
         answer,
         error: errMsg,
