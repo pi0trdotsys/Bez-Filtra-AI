@@ -5,6 +5,7 @@ import jwt from 'jsonwebtoken'
 import { Ollama } from 'ollama'
 import { Agent, setGlobalDispatcher } from 'undici'
 import { initDb, logConversation, getConversationLogs, getAdminStats, type ChatStats } from './db'
+import * as os from 'node:os'
 
 // Wyłącz timeouty po stronie klienta HTTP (fetch używany przez Ollamę),
 // żeby długie generacje na wolnym CPU nigdy nie były przerywane.
@@ -21,7 +22,7 @@ const NUM_CTX = Number(process.env.OLLAMA_NUM_CTX) || 2048
 
 // Opcje generowania per model - balans między jakością a szybkością
 function modelOptions(model: string): Record<string, unknown> {
-  const base = { temperature: 0.7, repeat_penalty: 1.1, num_ctx: NUM_CTX }
+  const base = { temperature: 0.7, top_p: 0.9, repeat_penalty: 1.1, num_ctx: NUM_CTX }
   if (model.includes('dolphin')) return { ...base, num_ctx: Math.min(NUM_CTX, 1536) }
   return base
 }
@@ -368,6 +369,34 @@ app.post('/api/chat', requireAuth, async (req, res) => {
   } finally {
     clearInterval(heartbeat)
     if (!res.writableEnded) res.end()
+  }
+})
+
+app.get('/api/status', async (_req, res) => {
+  const system = {
+    uptime: Math.round(os.uptime()),
+    cores: os.cpus().length,
+    mem: {
+      total: os.totalmem(),
+      free: os.freemem(),
+      usedPct: Math.round((1 - os.freemem() / os.totalmem()) * 100),
+    },
+    load: os.loadavg(),
+  }
+  const time = new Date().toISOString()
+  try {
+    const { models } = await ollama.list()
+    const available = models.some(m => m.name === DEFAULT_MODEL || m.name.startsWith(DEFAULT_MODEL.split(':')[0]))
+    let modelLoaded = false
+    try {
+      const ps = await ollama.ps()
+      const active = (ps as unknown as { models?: unknown[] }).models?.[0]
+      modelLoaded = !!active
+    } catch { /* ps może nie być dostępne */ }
+    res.json({ status: 'ok', ollama: 'up', model: DEFAULT_MODEL, modelLoaded: available && modelLoaded, modelAvailable: available, system, time })
+  } catch (err) {
+    log(`✗ Status: Ollama niedostępna: ${err instanceof Error ? err.message : String(err)}`)
+    res.status(503).json({ status: 'degraded', ollama: 'down', model: DEFAULT_MODEL, modelLoaded: false, modelAvailable: false, system, time })
   }
 })
 

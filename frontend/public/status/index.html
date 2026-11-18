@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Bez Filtra · status</title>
+  <link rel="manifest" href="/status/manifest.webmanifest" />
+  <meta name="theme-color" content="#D9401E" />
+  <link rel="icon" href="/icons/icon-192.png" />
+  <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+  <style>
+    :root { --bg:#F7F4EF; --surface:#fff; --border:#E5DED2; --ink:#1C1814; --soft:#6E655A; --faint:#948A7C; --accent:#D9401E; }
+    * { box-sizing:border-box; margin:0; padding:0; }
+    body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; background:var(--bg); color:var(--ink); min-height:100vh; display:flex; align-items:center; justify-content:center; padding:16px; }
+    .card { width:100%; max-width:420px; background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:24px; }
+    .mark { width:44px; height:44px; border:2px solid var(--accent); border-radius:12px; display:flex; align-items:center; justify-content:center; margin-bottom:14px; }
+    .mark i { width:12px; height:12px; border-radius:50%; background:var(--accent); display:block; }
+    h1 { font-family:ui-serif,Georgia,'Times New Roman',serif; font-size:1.6rem; margin-bottom:2px; }
+    .sub { color:var(--faint); font-size:0.78rem; letter-spacing:0.08em; text-transform:uppercase; margin-bottom:18px; }
+    .row { display:flex; justify-content:space-between; align-items:center; gap:12px; padding:10px 0; border-top:1px solid var(--border); }
+    .row .k { color:var(--soft); font-size:0.85rem; }
+    .row .v { font-weight:600; font-size:0.9rem; font-variant-numeric:tabular-nums; text-align:right; }
+    .ok { color:#2E7D4F; } .bad { color:#C0392B; }
+    .dot { width:8px; height:8px; border-radius:50%; display:inline-block; margin-right:6px; }
+    .dot.on { background:#22c55e; } .dot.off { background:#ef4444; }
+    .foot { margin-top:18px; color:var(--faint); font-size:0.72rem; text-align:center; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="mark"><i></i></div>
+    <h1>Bez Filtra</h1>
+    <div class="sub">Status serwisu</div>
+    <div class="row"><span class="k">Usługa</span><span class="v"><span id="dot" class="dot off"></span><span id="status">…</span></span></div>
+    <div class="row"><span class="k">Model</span><span class="v" id="model">…</span></div>
+    <div class="row"><span class="k">Model załadowany</span><span class="v" id="loaded">…</span></div>
+    <div class="row"><span class="k">Uptime</span><span class="v" id="uptime">…</span></div>
+    <div class="row"><span class="k">Obciążenie 1/5/15</span><span class="v" id="load">…</span></div>
+    <div class="row"><span class="k">RAM</span><span class="v" id="mem">…</span></div>
+    <div class="row"><span class="k">Rdzenie CPU</span><span class="v" id="cores">…</span></div>
+    <div class="foot" id="updated">…</div>
+  </div>
+  <script>
+    var fmtUptime = function (s) { var d = Math.floor(s / 86400), h = Math.floor(s % 86400 / 3600), m = Math.floor(s % 3600 / 60); return (d ? d + 'd ' : '') + h + 'h ' + m + 'm' }
+    var fmtGB = function (b) { return (b / 1073741824).toFixed(1) + ' GB' }
+    function refresh() {
+      fetch('/api/status')
+        .then(function (r) { return r.json() })
+        .then(function (d) {
+          var ok = d.ollama === 'up'
+          document.getElementById('dot').className = 'dot ' + (ok ? 'on' : 'off')
+          var st = document.getElementById('status')
+          st.textContent = ok ? 'działa' : 'degradowana'
+          st.className = ok ? 'ok' : 'bad'
+          document.getElementById('model').textContent = d.model || '—'
+          document.getElementById('loaded').textContent = d.modelLoaded ? 'tak' : 'nie'
+          document.getElementById('uptime').textContent = fmtUptime(d.system && d.system.uptime || 0)
+          var l = (d.system && d.system.load) || []
+          document.getElementById('load').textContent = l.map(function (x) { return x.toFixed(1) }).join(' / ')
+          document.getElementById('mem').textContent = d.system ? fmtGB(d.system.mem.total) + ' (użyte ' + d.system.mem.usedPct + '%)' : '—'
+          document.getElementById('cores').textContent = (d.system && d.system.cores) || '—'
+          document.getElementById('updated').textContent = 'aktualizacja: ' + new Date().toLocaleTimeString('pl-PL')
+        })
+        .catch(function () {
+          document.getElementById('dot').className = 'dot off'
+          document.getElementById('status').textContent = 'brak połączenia'
+          document.getElementById('status').className = 'bad'
+        })
+    }
+    refresh(); setInterval(refresh, 5000)
+    if ('serviceWorker' in navigator) navigator.serviceWorker.register('/status/sw.js').catch(function () {})
+  </script>
+</body>
+</html>

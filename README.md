@@ -181,9 +181,13 @@ Rekomendowane ustawienia natywnej Ollamy (systemd, `override.conf`):
 [Service]
 Environment="OLLAMA_HOST=172.17.0.1:11434"
 Environment="OLLAMA_NUM_PARALLEL=1"
+Environment="OLLAMA_FLASH_ATTENTION=1"
+Environment="OLLAMA_KV_CACHE_TYPE=q4_0"
 ```
 
 - `OLLAMA_NUM_PARALLEL=1` daje najwyższe tok/s przy jednym użytkowniku (cały CPU na jedno zapytanie).
+- `OLLAMA_FLASH_ATTENTION=1` + `OLLAMA_KV_CACHE_TYPE=q4_0` - szybsza uwaga i skwantyzowany cache KV -> mniej RAM i wyższe tok/s.
+- Jakość: domyślny `:8b` to kwantyzacja Q4_K_M (5 GB). Dla lepszej jakości (kosztem ~20% szybkości) pobierz `huihui_ai/qwen3-abliterated:8b-q5_K_M` (~6.5 GB).
 - Przy 16 GB RAM `huihui_ai/qwen3-abliterated:8b` (5 GB) to najlepszy balans jakości do szybkości; `:4b` (2.5 GB) sprawdzi się jako zapas/fallback.
 
 ### 5. Cloudflare Tunnel (brak publicznego IP)
