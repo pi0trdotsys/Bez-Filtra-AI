@@ -1,0 +1,58 @@
+<svg viewBox="0 0 860 540" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif">
+  <rect width="860" height="540" fill="#14110E"/>
+
+  <!-- Sidebar -->
+  <rect width="220" height="540" fill="#1E1A16"/>
+  <line x1="220" y1="0" x2="220" y2="540" stroke="#2E2922" stroke-width="1"/>
+  <rect x="14" y="14" width="22" height="22" rx="6" fill="none" stroke="#E85B33" stroke-width="1.5"/>
+  <circle cx="25" cy="25" r="3" fill="#E85B33"/>
+  <text x="44" y="30" font-size="16" font-weight="700" fill="#F2EDE4" font-family="ui-serif, Georgia, serif">Bez Filtra</text>
+  <rect x="14" y="52" width="192" height="34" rx="9" fill="#27221C" stroke="#2E2922" stroke-width="1"/>
+  <text x="28" y="74" font-size="12" fill="#B8AE9F">+ Nowa rozmowa</text>
+  <text x="16" y="108" font-size="9" fill="#7C7366" letter-spacing="1.5">PRZYPIĘTE</text>
+  <rect x="8" y="116" width="204" height="32" rx="7" fill="#3A241A" stroke="#E85B33" stroke-width="1"/>
+  <text x="18" y="137" font-size="11" fill="#F2EDE4">Jak działa silnik rakietowy</text>
+  <text x="16" y="168" font-size="9" fill="#7C7366" letter-spacing="1.5">DZIŚ</text>
+  <text x="18" y="194" font-size="11" fill="#B8AE9F">Historia kryptografii</text>
+  <text x="18" y="222" font-size="11" fill="#B8AE9F">Przepis na bigos</text>
+
+  <!-- Header -->
+  <rect x="220" y="0" width="640" height="48" fill="#1E1A16"/>
+  <line x1="220" y1="48" x2="860" y2="48" stroke="#2E2922" stroke-width="1"/>
+  <rect x="320" y="10" width="150" height="28" rx="14" fill="#1E1A16" stroke="#3D362C" stroke-width="1"/>
+  <circle cx="336" cy="24" r="4" fill="#22C55E"/>
+  <text x="346" y="28" font-size="11" font-weight="500" fill="#F2EDE4">Qwen 3 (8B) ▾</text>
+  <circle cx="740" cy="24" r="13" fill="none" stroke="#3D362C" stroke-width="1"/>
+  <path d="M740 16a9 9 0 0 1 0 16z" fill="#E85B33"/>
+
+  <!-- user bubble -->
+  <rect x="560" y="70" width="280" height="44" rx="12" fill="#1E1A16" stroke="#3D362C" stroke-width="1"/>
+  <text x="575" y="97" font-size="12" fill="#F2EDE4">Jak działa silnik rakietowy?</text>
+
+  <!-- assistant -->
+  <circle cx="248" cy="142" r="14" fill="#1E1A16" stroke="#E85B33" stroke-width="1"/>
+  <path d="M248 134l2.5 6.5L257 143l-6.5 2.5L248 152l-2.5-6.5L239 143l6.5-2.5z" fill="#E85B33"/>
+  <rect x="270" y="126" width="560" height="288" rx="12" fill="#1E1A16" stroke="#2E2922" stroke-width="1"/>
+
+  <text x="286" y="152" font-size="9" fill="#7C7366" letter-spacing="1">▾ ROZUMOWANIE</text>
+  <rect x="286" y="160" width="528" height="52" rx="8" fill="#27221C" stroke="#2E2922" stroke-width="1"/>
+  <text x="298" y="178" font-size="11" fill="#B8AE9F">Zastanawiam się nad zasadą działania silnika -</text>
+  <text x="298" y="194" font-size="11" fill="#B8AE9F">to klasyka III zasady dynamiki Newtona.</text>
+
+  <text x="286" y="236" font-size="12" font-weight="700" fill="#F2EDE4">Zasada działania silnika rakietowego</text>
+  <text x="286" y="258" font-size="11" fill="#B8AE9F">Silnik rakietowy działa na zasadzie III zasady Newtona -</text>
+  <text x="286" y="274" font-size="11" fill="#B8AE9F">każda akcja wywołuje równą i przeciwną reakcję.</text>
+
+  <rect x="286" y="288" width="528" height="70" rx="8" fill="#100E0B" stroke="#2E2922" stroke-width="1"/>
+  <text x="298" y="308" font-size="9" fill="#F2A18C" font-family="ui-monospace,monospace">PYTHON</text>
+  <text x="298" y="326" font-size="11" fill="#F2EDE4" font-family="ui-monospace,monospace">F = m * a</text>
+  <text x="298" y="344" font-size="11" fill="#F2EDE4" font-family="ui-monospace,monospace">pęd = m * v</text>
+
+  <text x="286" y="388" font-size="10" fill="#7C7366">128→342 tok · 11.4 tok/s · 29.9s · 0.54 Wh · 1.0 ml</text>
+
+  <!-- input -->
+  <rect x="250" y="480" width="576" height="46" rx="12" fill="#1E1A16" stroke="#3D362C" stroke-width="1"/>
+  <text x="270" y="508" font-size="12" fill="#7C7366">Zapytaj o cokolwiek…</text>
+  <rect x="798" y="490" width="26" height="26" rx="7" fill="#E85B33"/>
+  <text x="811" y="508" text-anchor="middle" font-size="13" fill="#FFFFFF">↑</text>
+</svg>
